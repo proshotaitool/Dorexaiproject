@@ -1,0 +1,80 @@
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isUserAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // USER RULES
+    match /users/{document=**} {
+      allow list: if isAdmin();
+    }
+    
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow create: if isAdmin() || isOwner(userId);
+      allow update, delete: if isOwner(userId) || isAdmin();
+    }
+    
+    // AD RULES
+    match /ads/{adId} {
+      // Anyone can read ads to display them on the site.
+      allow get, list: if true;
+      
+      // Only admins can create, update, or delete ads.
+      allow create, update, delete: if isAdmin();
+    }
+
+    // CONTACT MESSAGE RULES
+    match /contact-messages/{messageId} {
+        allow create: if true;
+        allow list, get, update, delete: if isAdmin();
+    }
+    
+    // AUDIT LOG RULES
+    match /audit-logs/{logId} {
+        allow read, list, create, update, delete: if isAdmin();
+    }
+
+    // NOTIFICATION RULES
+    match /notifications/{notificationId} {
+        allow read, list: if true;
+        allow create, update, delete: if isAdmin();
+    }
+
+    // SEO OVERRIDE RULES
+    match /seo-overrides/{pagePath} {
+      allow read: if true;
+      allow list, create, update, delete: if isAdmin();
+    }
+    
+    // PAGE CONTENT RULES
+    match /pages/{pageId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // TOOL SETTINGS RULES
+    match /tools-settings/{toolId} {
+      allow get, list: if true; // Public can read settings
+      allow create, update, delete: if isAdmin(); // Only admins can change settings
+    }
+
+    // BLOG POST RULES - Separated for clarity and to fix permission issue
+    match /blog-posts/{postId} {
+      allow get, list: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

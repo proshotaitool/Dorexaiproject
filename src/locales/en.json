@@ -1,0 +1,100 @@
+{
+    "nav": {
+        "home": "Home",
+        "tools": "Tools",
+        "premium": "Premium",
+        "pricing": "Pricing",
+        "about": "About"
+    },
+    "homepage": {
+        "hero": {
+            "title": "The Ultimate Toolkit for Your",
+            "titleHighlight": "Digital Files",
+            "subtitle": "Transform, edit, and optimize images, PDFs, and documents with cutting-edge technology.",
+            "ctaPrimary": "Get Started Free",
+            "ctaSecondary": "Explore Tools"
+        },
+        "toolCategories": {
+            "title": "All-in-One Toolkit",
+            "subtitle": "From quick edits to complex conversions, find the perfect tool for your needs. Simple, powerful, and fast.",
+            "viewTools": "View Tools"
+        },
+        "features": {
+            "title": "Why Choose DoreX Ai?",
+            "subtitle": "Built with performance, security, and ease of use in mind, so you can focus on what matters most.",
+            "feature1": {
+                "title": "Lightning Fast",
+                "description": "Process files instantly with our optimized algorithms, ensuring you get your results in seconds."
+            },
+            "feature2": {
+                "title": "Secure & Private",
+                "description": "Your files are processed with end-to-end encryption and are automatically deleted after 24 hours."
+            },
+            "feature3": {
+                "title": "AI-Powered",
+                "description": "Leverage cutting-edge AI for professional results, from image upscaling to content generation."
+            }
+        },
+        "testimonials": {
+            "title": "Loved by Thousands of Professionals",
+            "subtitle": "Don't just take our word for it. Here's what our users are saying.",
+            "testimonial1": {
+                "quote": "DoreX Ai has become an essential tool in my daily workflow. The AI image enhancement is incredible!"
+            },
+            "testimonial2": {
+                "quote": "I love how easy it is to process multiple PDFs at once. Saves me hours every week!"
+            },
+            "testimonial3": {
+                "quote": "The AI content generator helps me create engaging copy in seconds. Highly recommended!"
+            }
+        },
+        "finalCta": {
+            "title": "Ready to Transform Your Workflow?",
+            "subtitle": "Join thousands of users who trust DoreX Ai for their daily file processing needs. Get started in seconds.",
+            "cta": "Get Started for Free"
+        }
+    },
+    "login": {
+        "title": "Welcome Back",
+        "subtitle": "Enter your credentials to access your account.",
+        "continueWithGoogle": "Continue with Google",
+        "or": "OR",
+        "emailLabel": "Email",
+        "passwordLabel": "Password",
+        "rememberMe": "Remember me",
+        "forgotPassword": "Forgot password?",
+        "signInButton": "Sign In",
+        "noAccount": "Don't have an account?",
+        "signUpLink": "Sign Up",
+        "isAdmin": "Are you an admin?",
+        "adminLoginLink": "Admin Login",
+        "successTitle": "Login Successful",
+        "welcomeBack": "Welcome back!",
+        "failTitle": "Login Failed",
+        "failDescription": "Invalid credentials. Please try again.",
+        "googleFailTitle": "Google Sign-In Failed",
+        "googleFailDescription": "Could not sign in with Google."
+    },
+    "signup": {
+        "title": "Create an Account",
+        "subtitle": "Join DoreX Ai for free to get started.",
+        "signUpWithGoogle": "Sign Up with Google",
+        "or": "OR",
+        "fullNameLabel": "Full Name",
+        "emailLabel": "Email",
+        "passwordLabel": "Password",
+        "agreeTo": "I agree to the",
+        "termsLink": "Terms of Service",
+        "and": "and",
+        "privacyLink": "Privacy Policy",
+        "createAccountButton": "Create Account",
+        "alreadyHaveAccount": "Already have an account?",
+        "signInLink": "Sign In",
+        "agreementRequiredTitle": "Agreement Required",
+        "agreementRequiredDescription": "You must agree to the Terms of Service and Privacy Policy.",
+        "successTitle": "Account Created",
+        "welcomeNew": "Welcome to DoreX Ai!",
+        "failTitle": "Signup Failed",
+        "failDescription": "Could not create account. Please try again."
+    }
+}

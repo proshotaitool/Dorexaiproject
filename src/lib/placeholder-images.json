@@ -1,0 +1,76 @@
+{
+  "placeholderImages": [
+    {
+      "id": "testimonial-1",
+      "description": "Avatar for Sarah L.",
+      "imageUrl": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHw3fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTcyMDM5OTU2MHww&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "woman portrait"
+    },
+    {
+      "id": "testimonial-2",
+      "description": "Avatar for Mike R.",
+      "imageUrl": "https://images.unsplash.com/photo-1594672830234-ba4cfe1202dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxMHx8bWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzIwNDE4NjI2fDA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "man portrait"
+    },
+    {
+      "id": "testimonial-3",
+      "description": "Avatar for Jane D.",
+      "imageUrl": "https://images.unsplash.com/photo-1554727242-741c14fa561c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBzbWlsaW5nfGVufDB8fHx8MTcyMDQwNTcyNHww&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "person smiling"
+    },
+    {
+      "id": "blog-1",
+      "description": "Image for blog post about image compression.",
+      "imageUrl": "https://images.unsplash.com/photo-1510519333334-a74473de036e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxNXx8ZmFzdCUyMGxvYWRpbmd8ZW58MHx8fHwxNzIwNDEyNTg1fDA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "website loading fast"
+    },
+    {
+      "id": "blog-2",
+      "description": "Image for blog post about AI background removal.",
+      "imageUrl": "https://images.unsplash.com/photo-1618336753325-136544558509?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjB0cmFuc3BhcmVudCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzI0MDgyMjE0fDA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "person transparent background"
+    },
+    {
+      "id": "blog-3",
+      "description": "Image for blog post about merging PDFs.",
+      "imageUrl": "https://images.unsplash.com/photo-1521791136064-7986c2920216?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHw0fHxvcmdhbml6ZWQlMjBkb2N1bWVudHMlMjBmaWxlc3xlbnwwfHx8fDE3MjQwODIzMTB8MA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "organized documents files"
+    },
+    {
+      "id": "blog-4",
+      "description": "Image for blog post about AI text summarization.",
+      "imageUrl": "https://images.unsplash.com/photo-1677756119517-756a188d2d94?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxfHxyb2JvdCUyMHdyaXRpbmclMjBpbnNwaXJhdGlvbnxlbnwwfHx8fDE3MjQwODIzNTV8MA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "robot writing inspiration"
+    },
+    {
+      "id": "blog-5",
+      "description": "Image for blog post about multi-tool websites.",
+      "imageUrl": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxfHxwcm9kdWN0aXZpdHklMjBkYXNoYm9hcmR8ZW58MHx8fHwxNzI0MDgyNjExfDA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "productivity dashboard"
+    },
+    {
+      "id": "blog-6",
+      "description": "Image for blog post about content writing tools.",
+      "imageUrl": "https://images.unsplash.com/photo-1455390582262-044cdead277a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxfHx3cml0aW5nJTIwY29udGVudCUyMG9uJTIwbGFwdG9wfGVufDB8fHx8MTcyNDA4MjkyN3ww&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "writing content laptop"
+    },
+    {
+      "id": "mission",
+      "description": "Image for Our Mission section on about page",
+      "imageUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxfHx0ZWFtJTIwYnJhaW5zdG9ybWluZ3xlbnwwfHx8fDE3MjA0MTI2NTd8MA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "team brainstorming"
+    },
+    {
+      "id": "vision",
+      "description": "Image for Our Vision section on about page",
+      "imageUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxfHxmdXR1cmlzdGljJTIwdGVjaG5vbG9neXxlbnwwfHx8fDE3MjA0MTI2OTJ8MA&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "futuristic technology"
+    },
+    {
+      "id": "values",
+      "description": "Image for Our Values section on about page",
+      "imageUrl": "https://images.unsplash.com/photo-1543269865-cbf427effbad?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1MjQ0Nzh8MHwxfHNlYXJjaHwxfHxwZW9wbGUlMjBjb2xsYWJvcmF0aW5nfGVufDB8fHx8MTcyMDQxMjczNXww&ixlib=rb-4.0.3&q=80&w=1080",
+      "imageHint": "people collaborating"
+    }
+  ]
+}

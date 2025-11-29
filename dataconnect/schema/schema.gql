@@ -1,0 +1,37 @@
+type User @table {
+  username: String!
+  email: String!
+  passwordHash: String!
+  profilePictureUrl: String
+  bio: String
+}
+
+type Movie @table {
+  title: String!
+  releaseYear: Int!
+  tmdbId: String!
+  posterUrl: String
+  summary: String
+  director: String
+  runtimeMinutes: Int
+}
+
+type WatchEntry @table(key: ["user", "movie"]) {
+  user: User!
+  movie: Movie!
+  watchedAt: Timestamp!
+  rating: Int!
+  reviewText: String
+}
+
+type Watchlist @table(key: ["user", "movie"]) {
+  user: User!
+  movie: Movie!
+  addedAt: Timestamp!
+}
+
+type Follow @table(key: ["follower", "following"]) {
+  follower: User!
+  following: User!
+  followedAt: Timestamp!
+}

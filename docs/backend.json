@@ -1,0 +1,358 @@
+{
+  "entities": {
+    "ToolSetting": {
+      "title": "Tool Setting",
+      "description": "Represents the configuration and status of a single tool.",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the tool is active and visible to users."
+        }
+      },
+      "required": ["enabled"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Represents a user's public profile and app-specific data.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The user's full name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "avatarUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the user's profile picture."
+        },
+        "plan": {
+          "type": "string",
+          "enum": [
+            "Free",
+            "Pro",
+            "Business"
+          ],
+          "description": "The user's current subscription plan."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "Active",
+            "Suspended"
+          ],
+          "description": "The user's account status."
+        },
+        "joined": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date and time the user signed up."
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "admin",
+            "manager",
+            "user"
+          ],
+          "description": "The user's role in the system."
+        },
+        "credits": {
+          "type": "number",
+          "description": "The number of credits the user has available."
+        },
+        "favoriteTools": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of tool paths that the user has marked as favorite."
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "plan",
+        "status",
+        "joined",
+        "role"
+      ]
+    },
+    "Ad": {
+      "title": "Advertisement",
+      "description": "Represents an ad configuration for display on the website.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The internal name for the ad."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Active", "Inactive"],
+          "description": "The current status of the ad."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["image", "code"],
+          "description": "The type of ad content."
+        },
+        "placements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of placement identifiers where the ad should appear."
+        },
+        "content": {
+          "type": "object",
+          "properties": {
+            "imageUrl": {
+              "type": "string",
+              "format": "uri"
+            },
+            "htmlCode": {
+              "type": "string"
+            }
+          },
+          "description": "The actual content of the ad."
+        },
+        "clicks": {
+          "type": "number",
+          "description": "The number of times the ad has been clicked."
+        },
+        "impressions": {
+          "type": "number",
+          "description": "The number of times the ad has been viewed."
+        }
+      },
+      "required": ["name", "status", "type", "placements", "content"]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Represents a message submitted through the contact form.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The full name of the person sending the message."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the person sending the message."
+        },
+        "subject": {
+            "type": "string",
+            "description": "The subject of the message."
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "submittedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the message was submitted."
+        }
+      },
+      "required": ["name", "email", "subject", "message", "submittedAt"]
+    },
+    "AuditLog": {
+        "title": "Audit Log",
+        "description": "Represents a log of actions performed by users.",
+        "type": "object",
+        "properties": {
+            "userId": {
+                "type": "string",
+                "description": "The ID of the user who performed the action."
+            },
+            "userEmail": {
+                "type": "string",
+                "description": "The email of the user who performed the action."
+            },
+            "action": {
+                "type": "string",
+                "description": "A description of the action performed."
+            },
+            "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When the action was performed."
+            }
+        },
+        "required": ["userId", "userEmail", "action", "timestamp"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Represents an in-app notification for users.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Banner", "Modal Popup", "Toast", "Snackbar", "Inline Alert"],
+          "description": "The type of notification display."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the notification."
+        },
+        "message": {
+          "type": "string",
+          "description": "The main content of the notification."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["Success", "Info", "Warning", "Error"],
+          "description": "The style variant of the notification."
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the notification was created."
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "An optional image to display with the notification."
+        }
+      },
+      "required": ["type", "title", "message", "variant", "date"]
+    },
+    "SeoOverride": {
+      "title": "SEO Override",
+      "description": "Stores custom SEO metadata for a specific page.",
+      "type": "object",
+      "properties": {
+        "metaTitle": {
+          "type": "string",
+          "description": "The custom meta title for the page."
+        },
+        "metaDescription": {
+          "type": "string",
+          "description": "The custom meta description for the page."
+        },
+        "keywords": {
+          "type": "string",
+          "description": "Comma-separated keywords for the page."
+        }
+      }
+    },
+    "BlogPost": {
+      "title": "Blog Post",
+      "description": "Represents a single blog post or article.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The main title of the blog post."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category the blog post belongs to."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Published", "Draft"],
+          "description": "The current status of the post."
+        },
+        "author": {
+          "type": "string",
+          "description": "The name of the author."
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The publication date of the post."
+        },
+        "imageUrl": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the post's featured image."
+        },
+        "imageHint": {
+          "type": "string",
+          "description": "A hint for AI image generation or search."
+        },
+        "content": {
+          "type": "string",
+          "description": "The full content of the blog post in Markdown or HTML."
+        }
+      },
+      "required": ["title", "category", "status", "author", "date", "imageUrl", "content"]
+    },
+    "PageContent": {
+      "title": "Page Content",
+      "description": "Stores editable content for a specific website page.",
+      "type": "object",
+      "properties": {}
+    }
+  },
+  "auth": {
+    "providers": [
+      "emailPassword",
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "/tools-settings/{toolId}": {
+      "schema": {
+        "$ref": "#/entities/ToolSetting"
+      },
+      "description": "Stores settings for each tool, such as its enabled status. The document ID corresponds to the tool's path, with slashes replaced by underscores."
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Stores user profile information, including their plan, status, and join date."
+    },
+    "/ads/{adId}": {
+      "schema": {
+        "$ref": "#/entities/Ad"
+      },
+      "description": "Stores ad configurations for the website."
+    },
+    "/contact-messages/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/ContactMessage"
+      },
+      "description": "Stores messages submitted through the contact form."
+    },
+    "/audit-logs/{logId}": {
+        "schema": {
+            "$ref": "#/entities/AuditLog"
+        },
+        "description": "Stores audit log entries for administrative actions."
+    },
+    "/notifications/{notificationId}": {
+      "schema": {
+        "$ref": "#/entities/Notification"
+      },
+      "description": "Stores system-wide notifications for users."
+    },
+    "/seo-overrides/{pagePath}": {
+      "schema": {
+        "$ref": "#/entities/SeoOverride"
+      },
+      "description": "Stores custom SEO metadata for specific site pages. The document ID is the URL-encoded page path."
+    },
+    "/blog-posts/{postId}": {
+      "schema": {
+        "$ref": "#/entities/BlogPost"
+      },
+      "description": "Stores all blog posts for the website."
+    },
+    "/pages/{pageId}": {
+      "schema": {
+        "$ref": "#/entities/PageContent"
+      },
+      "description": "Stores editable content for website pages. The document ID is the URL-encoded page path."
+    }
+  }
+}
