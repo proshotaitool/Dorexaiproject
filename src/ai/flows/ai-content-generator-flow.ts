@@ -7,8 +7,8 @@
  * - GenerateContentOutput - The return type for the generateContent function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const GenerateContentInputSchema = z.object({
   prompt: z.string().describe('The user\'s request for content generation.'),
@@ -26,8 +26,8 @@ export async function generateContent(input: GenerateContentInput): Promise<Gene
 
 const prompt = ai.definePrompt({
   name: 'generateContentPrompt',
-  input: {schema: GenerateContentInputSchema},
-  output: {schema: GenerateContentOutputSchema},
+  input: { schema: GenerateContentInputSchema },
+  output: { schema: GenerateContentOutputSchema },
   prompt: `You are a versatile content creation assistant. Generate high-quality, well-structured content based on the following request:
 
 "{{{prompt}}}"
@@ -35,7 +35,7 @@ const prompt = ai.definePrompt({
 Format the response professionally. Use headings, subheadings, paragraphs, bullet points, emojis, bold text, and other rich formatting elements to make the content clear, engaging, and easy to read.
 
 Provide only the generated content in your response, directly inside the 'content' field of the JSON output.`,
-  model: 'googleai/gemini-2.5-flash',
+  model: 'googleai/gemini-1.5-flash',
 });
 
 const generateContentFlow = ai.defineFlow(
@@ -45,7 +45,7 @@ const generateContentFlow = ai.defineFlow(
     outputSchema: GenerateContentOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );

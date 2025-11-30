@@ -63,6 +63,7 @@ export const tools: Tool[] = [
     category: 'Image',
     color: 'text-purple-500',
     isAi: true,
+    isComingSoon: true,
   },
   {
     name: 'Compress Image',
@@ -88,6 +89,7 @@ export const tools: Tool[] = [
     category: 'Image',
     color: 'text-purple-500',
     isAi: true,
+    isComingSoon: true,
   },
   {
     name: 'Crop Image',
@@ -97,7 +99,7 @@ export const tools: Tool[] = [
     category: 'Image',
     color: 'text-blue-500',
   },
-   {
+  {
     name: 'Convert to JPG',
     description: 'Transform various image formats into high-quality JPGs.',
     icon: RefreshCw,
@@ -122,7 +124,7 @@ export const tools: Tool[] = [
     color: 'text-purple-500',
     isAi: true,
   },
-    {
+  {
     name: 'Watermark Image',
     description: 'Add a text or image watermark to your pictures.',
     icon: Layers,
@@ -172,7 +174,7 @@ export const tools: Tool[] = [
     color: 'text-green-500',
     isAi: true,
   },
-   {
+  {
     name: 'Rotate Image',
     description: 'Rotate images left or right by 90 degrees.',
     icon: RotateCcw,
@@ -188,6 +190,7 @@ export const tools: Tool[] = [
     category: 'Image',
     color: 'text-purple-500',
     isAi: true,
+    isComingSoon: true,
   },
   {
     name: 'AI Video Enhancer',

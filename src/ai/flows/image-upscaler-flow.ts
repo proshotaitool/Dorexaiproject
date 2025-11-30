@@ -37,7 +37,7 @@ export async function upscaleImage(input: UpscaleImageInput): Promise<UpscaleIma
 
   try {
     const { media } = await generateWithRotation({
-      model: 'googleai/gemini-2.5-flash-image-preview',
+      model: 'googleai/imagen-3.0-generate-002',
       prompt: [
         { media: { url: input.photoDataUri } },
         { text: `Upscale this image to ${input.scale}x its original resolution. Enhance details and improve clarity without adding artifacts.` },
@@ -53,8 +53,8 @@ export async function upscaleImage(input: UpscaleImageInput): Promise<UpscaleIma
     return {
       processedPhotoDataUri: media.url,
     };
-  } catch(error: any) {
-      console.error("AI Upscaling Error:", error);
-      return { error: 'Failed to process image with AI. Please check your API key or try again later.' };
+  } catch (error: any) {
+    console.error("AI Upscaling Error:", error);
+    return { error: 'Failed to process image with AI. Please check your API key or try again later.' };
   }
 }

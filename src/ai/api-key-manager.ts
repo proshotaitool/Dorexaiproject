@@ -1,8 +1,6 @@
 
 const keys = [
   process.env.GEMINI_API_KEY,
-  process.env.GEMINI_API_KEY_2,
-  process.env.GEMINI_API_KEY_3,
 ].filter((key): key is string => !!key);
 
 let currentKeyIndex = 0;
@@ -31,5 +29,5 @@ export function getApiKeyCount(): number {
 }
 
 export function resetApiKeyIndex(): void {
-    currentKeyIndex = 0;
+  currentKeyIndex = 0;
 }

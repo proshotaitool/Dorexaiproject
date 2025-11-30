@@ -28,7 +28,7 @@ const RemoveBackgroundOutputSchema = z.object({
     .describe(
       'A photo with the background removed, as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.' // prettier-ignore
     ).optional(),
-    error: z.string().optional(),
+  error: z.string().optional(),
 });
 export type RemoveBackgroundOutput = z.infer<typeof RemoveBackgroundOutputSchema>;
 
@@ -37,10 +37,10 @@ export async function removeBackground(input: RemoveBackgroundInput): Promise<Re
 
   try {
     const { media } = await generateWithRotation({
-      model: 'googleai/gemini-2.5-flash-image-preview',
+      model: 'googleai/imagen-3.0-generate-002',
       prompt: [
-        {media: {url: input.photoDataUri}},
-        {text: 'remove the background from the photo'},
+        { media: { url: input.photoDataUri } },
+        { text: 'remove the background from the photo' },
       ],
       config: {
         responseModalities: ['TEXT', 'IMAGE'],

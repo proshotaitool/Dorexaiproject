@@ -8,8 +8,8 @@
  * - ImageQualityOutput - The return type for the suggestImageQuality function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const ImageQualityInputSchema = z.object({
   photoDataUri: z
@@ -33,8 +33,8 @@ export async function suggestImageQuality(input: ImageQualityInput): Promise<Ima
 
 const prompt = ai.definePrompt({
   name: 'imageQualityPrompt',
-  input: {schema: ImageQualityInputSchema},
-  output: {schema: ImageQualityOutputSchema},
+  input: { schema: ImageQualityInputSchema },
+  output: { schema: ImageQualityOutputSchema },
   prompt: `You are an expert image compression analyst. Based on the provided image, suggest an optimal quality setting (a number between 0 and 100) for JPEG or WEBP compression.
 
 Your goal is to find the best balance between file size reduction and perceptual quality.
@@ -48,7 +48,7 @@ Analyze the image content and return only the suggested quality number.
 Image: {{media url=photoDataUri}}
 
 Return the suggestion in the structured JSON format.`,
-  model: 'googleai/gemini-2.5-flash',
+  model: 'googleai/gemini-1.5-flash',
 });
 
 const suggestImageQualityFlow = ai.defineFlow(
@@ -58,7 +58,7 @@ const suggestImageQualityFlow = ai.defineFlow(
     outputSchema: ImageQualityOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );

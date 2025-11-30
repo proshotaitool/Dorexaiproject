@@ -28,16 +28,16 @@ const AiPhotoEditorOutputSchema = z.object({
     .describe(
       'The edited photo, as a data URI that must include a MIME type and use Base64 encoding.'
     ).optional(),
-    error: z.string().optional(),
+  error: z.string().optional(),
 });
 export type AiPhotoEditorOutput = z.infer<typeof AiPhotoEditorOutputSchema>;
 
 export async function editImageWithPrompt(input: AiPhotoEditorInput): Promise<AiPhotoEditorOutput> {
   const generateWithRotation = configureGenkit(input.apiKey);
-  
+
   try {
     const { media } = await generateWithRotation({
-      model: 'googleai/gemini-2.5-flash-image-preview',
+      model: 'googleai/imagen-3.0-generate-002',
       prompt: [
         { media: { url: input.photoDataUri } },
         { text: `Apply the following edit to the image: "${input.prompt}". Return only the edited image.` },
@@ -48,14 +48,15 @@ export async function editImageWithPrompt(input: AiPhotoEditorInput): Promise<Ai
     });
 
     if (!media) {
-        return { error: 'No media returned from the AI photo editor flow.' };
+      return { error: 'No media returned from the AI photo editor flow.' };
     }
 
     return {
       editedPhotoDataUri: media.url,
     };
   } catch (error: any) {
-      console.error("AI Photo Editor Error:", error);
-      return { error: 'Failed to process image with AI. Please check your API key or try again later.' };
+    console.error("AI Photo Editor Error Details:", JSON.stringify(error, null, 2));
+    console.error("AI Photo Editor Error Message:", error.message);
+    return { error: `Failed to process image with AI. Details: ${error.message}` };
   }
 }

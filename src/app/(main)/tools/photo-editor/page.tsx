@@ -393,12 +393,8 @@ export default function PhotoEditorPage() {
               imgDisplayWidth = containerHeight * imageRatio;
             }
 
-            const cropWidthPercent = 80;
-            const cropHeightPercent = 80;
-            const cropXPercent = (100 - cropWidthPercent) / 2;
-            const cropYPercent = (100 - cropHeightPercent) / 2;
-
-            setCrop({ x: cropXPercent, y: cropYPercent, width: cropWidthPercent, height: cropHeightPercent });
+            // React-cropper handles initial crop automatically
+            // setCrop({ x: cropXPercent, y: cropYPercent, width: cropWidthPercent, height: cropHeightPercent });
           }
         };
         router.refresh();
@@ -416,6 +412,7 @@ export default function PhotoEditorPage() {
     try {
       const dataUrl = canvas.toDataURL('image/jpeg', 0.9); // 0.9 quality
       sessionStorage.setItem('download-image', dataUrl);
+      sessionStorage.setItem('download-filename', 'dorex-ai-edited.jpg');
       router.push('/download');
     } catch (e) {
       console.error(e);

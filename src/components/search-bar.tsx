@@ -77,20 +77,37 @@ export function SearchBar() {
               <ul className="space-y-1">
                 {suggestions.map((tool) => (
                   <li key={tool.path}>
-                    <Link
-                      href={tool.path}
-                      onClick={handleSuggestionClick}
-                      className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted transition-colors"
-                    >
-                      <div className={cn('p-2 rounded-lg bg-muted/50', tool.color)}>
-                        <tool.icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-semibold">{tool.name}</p>
-                        <p className="text-xs text-muted-foreground">{tool.description}</p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                    </Link>
+                    <li key={tool.path}>
+                      {tool.isComingSoon ? (
+                        <div className="flex items-center gap-4 p-3 rounded-lg opacity-60 cursor-not-allowed bg-muted/30">
+                          <div className={cn('p-2 rounded-lg bg-muted/50', tool.color)}>
+                            <tool.icon className="h-5 w-5" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-semibold">{tool.name}</p>
+                              <span className="text-[10px] px-1.5 py-0.5 rounded-full border border-muted-foreground/30 text-muted-foreground">Coming Soon</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">{tool.description}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <Link
+                          href={tool.path}
+                          onClick={handleSuggestionClick}
+                          className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted transition-colors"
+                        >
+                          <div className={cn('p-2 rounded-lg bg-muted/50', tool.color)}>
+                            <tool.icon className="h-5 w-5" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-semibold">{tool.name}</p>
+                            <p className="text-xs text-muted-foreground">{tool.description}</p>
+                          </div>
+                          <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                        </Link>
+                      )}
+                    </li>
                   </li>
                 ))}
               </ul>

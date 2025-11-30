@@ -8,8 +8,8 @@
  * - ImageResizerOutput - The return type for the suggestImageDimensions function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const ImageResizerInputSchema = z.object({
   photoDataUri: z
@@ -37,8 +37,8 @@ export async function suggestImageDimensions(input: ImageResizerInput): Promise<
 
 const prompt = ai.definePrompt({
   name: 'imageResizerPrompt',
-  input: {schema: ImageResizerInputSchema},
-  output: {schema: ImageResizerOutputSchema},
+  input: { schema: ImageResizerInputSchema },
+  output: { schema: ImageResizerOutputSchema },
   prompt: `You are an expert graphic designer and social media manager. Based on the provided image, suggest 4-6 optimal dimensions for common use cases.
 
 Prioritize common social media platforms and standard web image sizes. For example: Instagram Post, Instagram Story, Facebook Post, Twitter Post, Website Hero, Blog Thumbnail.
@@ -48,7 +48,7 @@ Analyze the image content and aspect ratio to provide smart recommendations. For
 Image: {{media url=photoDataUri}}
 
 Return the suggestions in a structured JSON format.`,
-  model: 'googleai/gemini-2.5-flash',
+  model: 'googleai/imagen-3.0-generate-002',
 });
 
 const suggestImageDimensionsFlow = ai.defineFlow(
@@ -58,7 +58,7 @@ const suggestImageDimensionsFlow = ai.defineFlow(
     outputSchema: ImageResizerOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );

@@ -7,8 +7,8 @@
  * - StraightenImageOutput - The return type for the straightenImage function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const StraightenImageInputSchema = z.object({
   photoDataUri: z
@@ -20,7 +20,7 @@ const StraightenImageInputSchema = z.object({
 export type StraightenImageInput = z.infer<typeof StraightenImageInputSchema>;
 
 const StraightenImageOutputSchema = z.object({
-    angle: z.number().describe('The suggested rotation angle in degrees (-45 to 45) to make the image level. A positive angle means clockwise rotation.'),
+  angle: z.number().describe('The suggested rotation angle in degrees (-45 to 45) to make the image level. A positive angle means clockwise rotation.'),
 });
 export type StraightenImageOutput = z.infer<typeof StraightenImageOutputSchema>;
 
@@ -32,8 +32,8 @@ export async function straightenImage(input: StraightenImageInput): Promise<Stra
 
 const prompt = ai.definePrompt({
   name: 'imageStraightenPrompt',
-  input: {schema: StraightenImageInputSchema},
-  output: {schema: StraightenImageOutputSchema},
+  input: { schema: StraightenImageInputSchema },
+  output: { schema: StraightenImageOutputSchema },
   prompt: `You are an expert in photography and image analysis. Analyze the provided image to detect its tilt or skew.
 
 Your task is to determine the angle of rotation needed to make the image perfectly level (e.g., making the horizon horizontal).
@@ -48,7 +48,7 @@ For example, if the image is tilted 3.5 degrees to the left, you should return: 
 Image: {{media url=photoDataUri}}
 
 Return the angle in the structured JSON format.`,
-  model: 'googleai/gemini-2.5-flash',
+  model: 'googleai/imagen-3.0-generate-002',
 });
 
 const straightenImageFlow = ai.defineFlow(
@@ -58,7 +58,7 @@ const straightenImageFlow = ai.defineFlow(
     outputSchema: StraightenImageOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );

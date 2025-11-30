@@ -65,7 +65,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={cn('font-body antialiased', inter.variable)} suppressHydrationWarning>
+      <body className={cn('font-body antialiased overflow-x-hidden', inter.variable)} suppressHydrationWarning>
         <FirebaseClientProvider>
           <LanguageProvider>
             {children}

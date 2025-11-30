@@ -19,9 +19,15 @@ export function middleware(request: NextRequest) {
     }
   }
 
+  // Redirect disabled tools
+  const disabledTools = ['/tools/ai-photo-editor', '/tools/blur-faces', '/tools/image-upscaler'];
+  if (disabledTools.some(path => pathname.startsWith(path))) {
+    return NextResponse.redirect(new URL('/tools', request.url));
+  }
+
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/admin', '/admin/:path*'],
+  matcher: ['/admin', '/admin/:path*', '/tools/:path*'],
 }

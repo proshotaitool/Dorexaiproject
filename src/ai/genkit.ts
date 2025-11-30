@@ -1,10 +1,11 @@
 
 import { genkit, type GenerateOptions } from 'genkit';
+import { openAI } from 'genkitx-openai';
 import { googleAI } from '@genkit-ai/google-genai';
 import { getApiKey, rotateApiKey, resetApiKeyIndex, getApiKeyCount } from './api-key-manager';
 
 export const ai = genkit({
-  plugins: [googleAI()],
+    plugins: [googleAI(), openAI({ apiKey: process.env.OPENAI_API_KEY })],
 });
 
 // This function now returns another function that handles the generation with rotation.
@@ -12,8 +13,8 @@ export function configureGenkit(userApiKey?: string) {
     // This is the function that will be called by the flows.
     return async function generateWithRotation(options: GenerateOptions): Promise<{ media: any; text: any; }> {
         let attempts = 0;
-        const maxAttempts = getApiKeyCount(); 
-        
+        const maxAttempts = getApiKeyCount();
+
         resetApiKeyIndex(); // Reset to the first key for each new request.
 
         while (attempts < maxAttempts) {
@@ -22,7 +23,7 @@ export function configureGenkit(userApiKey?: string) {
                 if (!currentApiKey) {
                     throw new Error('No API key available.');
                 }
-                
+
                 const localAI = genkit({
                     plugins: [googleAI({ apiKey: currentApiKey })],
                 });
@@ -47,7 +48,7 @@ export function configureGenkit(userApiKey?: string) {
                 throw error;
             }
         }
-        
+
         // If all attempts failed
         throw new Error('All API keys have exceeded their quotas. Please try again later.');
     };

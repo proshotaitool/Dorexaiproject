@@ -39,10 +39,11 @@ export async function blurFaces(input: BlurFacesInput): Promise<BlurFacesOutput>
 
   try {
     const { media } = await generateWithRotation({
-      model: 'googleai/gemini-2.5-flash-image-preview',
+      model: 'googleai/imagen-3.0-generate-002',
       prompt: [
         { media: { url: input.photoDataUri, contentType: mimeType } },
-        { text: `Your task is to identify all human faces in the provided image and apply a visual effect to obscure them for privacy.
+        {
+          text: `Your task is to identify all human faces in the provided image and apply a visual effect to obscure them for privacy.
 
         1.  **Detect all human faces** in the image.
         2.  Apply a **'${input.blurMode}'** effect to each detected face.
@@ -58,7 +59,7 @@ export async function blurFaces(input: BlurFacesInput): Promise<BlurFacesOutput>
     if (!media) {
       return { error: 'No media returned from the face blurring flow.' };
     }
-    
+
     return {
       processedPhotoDataUri: media.url,
     };

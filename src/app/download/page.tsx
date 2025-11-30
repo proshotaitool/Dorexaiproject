@@ -39,21 +39,31 @@ export default function DownloadPage() {
         return () => clearInterval(timer);
     }, [downloadUrl]);
 
-    const handleDownload = () => {
-        if (!downloadUrl) return;
+    const handleDownload = async () => {
+        if (!downloadUrl || hasDownloaded.current) return;
 
         setIsDownloading(true);
         hasDownloaded.current = true;
 
         try {
+            // Convert Data URL to Blob
+            const response = await fetch(downloadUrl);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
             const link = document.createElement('a');
-            link.href = downloadUrl;
-            link.download = 'dorex-ai-edited.jpg';
+            link.href = blobUrl;
+            const filename = sessionStorage.getItem('download-filename') || 'dorex-ai-edited.jpg';
+            link.download = filename;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+
+            // Clean up
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
         } catch (error) {
             console.error("Download failed:", error);
+            hasDownloaded.current = false; // Reset on error to allow retry
         } finally {
             setIsDownloading(false);
         }

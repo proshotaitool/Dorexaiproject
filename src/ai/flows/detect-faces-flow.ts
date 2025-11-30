@@ -7,8 +7,8 @@
  * - DetectFacesOutput - The return type for the detectFaces function.
  */
 
-import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const DetectFacesInputSchema = z.object({
   photoDataUri: z
@@ -39,8 +39,8 @@ export async function detectFaces(input: DetectFacesInput): Promise<DetectFacesO
 
 const prompt = ai.definePrompt({
   name: 'detectFacesPrompt',
-  input: {schema: DetectFacesInputSchema},
-  output: {schema: DetectFacesOutputSchema},
+  input: { schema: DetectFacesInputSchema },
+  output: { schema: DetectFacesOutputSchema },
   prompt: `Analyze the provided image and identify all human faces.
 
 Return a bounding box for each detected face. Each bounding box should be defined by the top-left corner (x, y) and its dimensions (width, height). All values must be percentages of the total image dimensions (0-100).
@@ -50,7 +50,7 @@ If no faces are found, return an empty array.
 Image: {{media url=photoDataUri}}
 
 Return the bounding boxes in the structured JSON format.`,
-  model: 'googleai/gemini-2.5-flash',
+  model: 'googleai/gemini-1.5-flash',
 });
 
 const detectFacesFlow = ai.defineFlow(
@@ -60,7 +60,7 @@ const detectFacesFlow = ai.defineFlow(
     outputSchema: DetectFacesOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );
