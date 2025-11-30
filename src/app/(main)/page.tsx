@@ -13,6 +13,7 @@ import { ToolCard } from '@/components/tool-card';
 import { placeholderImages } from '@/lib/placeholder-images';
 import { useToolManager } from '@/hooks/useToolManager';
 import { Skeleton } from '@/components/ui/skeleton';
+import { AdUnit } from '@/components/ad-unit';
 
 const FloatingIcon = ({ icon: Icon, className }: { icon: React.ElementType, className?: string }) => (
   <div className={`absolute hidden md:block animate-float ${className}`}>
@@ -261,6 +262,11 @@ export default function Home() {
             </div>
           )}
         </div>
+      </section>
+
+      {/* AdSense Unit */}
+      <section className="container py-8">
+        <AdUnit slotId="homepage-middle" className="w-full" />
       </section>
 
       {/* Features / Why Choose Section */}

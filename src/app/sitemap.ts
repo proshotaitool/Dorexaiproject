@@ -23,15 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }));
-  
-  // In a real application, you would also fetch and add dynamic blog post URLs here.
-  // For now, we'll manually add the main blog page
-  const blogRoute = {
-    url: `${siteUrl}/blog`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 0.7,
-  };
 
-  return [...staticRoutes, ...toolRoutes, blogRoute];
+  return [...staticRoutes, ...toolRoutes];
 }
