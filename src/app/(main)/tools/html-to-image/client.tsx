@@ -20,7 +20,7 @@ import { useUser, useFirestore, useDoc } from '@/firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { AdUnit } from '@/components/ad-unit';
+
 
 import { captureUrl } from '@/app/actions/capture-url';
 
@@ -328,7 +328,7 @@ export default function HtmlToImageClient() {
                             </Button>
                         </CardContent>
                     </Card>
-                    <AdUnit slotId="html-to-image-sidebar" className="w-full" />
+
                 </div>
 
                 <Card className="min-h-[600px] flex flex-col">

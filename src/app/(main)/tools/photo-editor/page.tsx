@@ -16,7 +16,6 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AdSlot } from '@/components/ad-slot';
 import { useUser } from '@/firebase';
 import {
   Paintbrush, Circle, Square, Star, Triangle, Heart, Hexagon,
@@ -949,7 +948,7 @@ export default function PhotoEditorPage() {
           </main>
           <aside className="w-80 border-l bg-background p-4 overflow-y-auto space-y-4">
             {renderInspector()}
-            <AdSlot placement="editor_sidebar" className="w-full h-[250px] mt-auto" />
+
           </aside>
         </div>
       </div>

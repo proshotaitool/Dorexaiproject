@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { RelatedTools } from '@/components/related-tools';
 import { tools } from '@/lib/tools';
-import pptxgen from "pptxgenjs";
+// import pptxgen from "pptxgenjs"; // Removed for dynamic import
 
 // Import PDF.js
 import * as pdfjsLib from 'pdfjs-dist';
@@ -136,6 +136,7 @@ export default function PdfToPowerPointClient() {
 
         setProcessing(true);
         try {
+            const pptxgen = (await import("pptxgenjs")).default;
             const pres = new pptxgen();
 
             selectedPages.forEach(page => {

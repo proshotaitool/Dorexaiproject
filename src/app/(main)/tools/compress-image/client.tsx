@@ -29,7 +29,7 @@ import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import JSZip from 'jszip';
 import { Switch } from '@/components/ui/switch';
-import { AdUnit } from '@/components/ad-unit';
+
 
 type ImageFile = {
     id: string;
@@ -596,7 +596,7 @@ export default function CompressImageClient() {
                                     </Button>
                                 )}
                             </div>
-                            <AdUnit slotId="compress-image-sidebar" className="w-full" />
+
                         </aside>
                     </CardContent>
                 </Card>

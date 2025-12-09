@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Loader2, Download, ArrowLeft } from 'lucide-react';
+import { AdsterraNativeAd } from '@/components/adsterra-native-ad';
 
 export default function DownloadPage() {
     const router = useRouter();
@@ -132,6 +133,9 @@ export default function DownloadPage() {
                     </Button>
                 </CardContent>
             </Card>
+            <div className="mt-8 w-full max-w-2xl">
+                <AdsterraNativeAd />
+            </div>
         </div>
     );
 }
