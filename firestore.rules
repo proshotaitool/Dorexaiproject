@@ -44,7 +44,8 @@ service cloud.firestore {
     
     // AUDIT LOG RULES
     match /audit-logs/{logId} {
-        allow read, list, create, update, delete: if isAdmin();
+        allow read, list: if request.auth != null;
+        allow create, update, delete: if isAdmin();
     }
 
     // NOTIFICATION RULES

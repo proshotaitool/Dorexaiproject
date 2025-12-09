@@ -41,14 +41,15 @@ export default function SettingsPage() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [faviconPreview, setFaviconPreview] = useState<string | null>(null);
   const { toast } = useToast();
-  const { user: currentUser } = useUser();
+  const { user: currentUser, profile } = useUser();
   const firestore = useFirestore();
 
   const [isSaving, setIsSaving] = useState(false);
   const [userEmailToUpdate, setUserEmailToUpdate] = useState('');
   const [isGranting, setIsGranting] = useState(false);
 
-  const logsCollection = firestore ? query(collection(firestore, 'audit-logs'), orderBy('timestamp', 'desc')) : null;
+  const isAdmin = (profile as any)?.role === 'admin';
+  const logsCollection = (firestore && isAdmin) ? query(collection(firestore, 'audit-logs'), orderBy('timestamp', 'desc')) : null;
   const { data: logs, isLoading: logsLoading } = useCollection<AuditLog>(logsCollection as any);
 
 
