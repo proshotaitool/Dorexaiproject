@@ -31,8 +31,23 @@ const nextConfig: NextConfig = {
     ],
   },
   serverExternalPackages: ['pdfjs-dist'],
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.resolve.alias.canvas = false;
+
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        https: false,
+        'node:fs': false,
+        'node:https': false,
+      };
+
+      config.resolve.alias['node:fs'] = false;
+      config.resolve.alias['node:https'] = false;
+      config.resolve.alias['pptxgenjs'] = 'pptxgenjs/dist/pptxgen.min.js';
+    }
+
     return config;
   },
 };

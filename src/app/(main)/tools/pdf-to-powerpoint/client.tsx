@@ -86,7 +86,7 @@ export default function PdfToPowerPointClient() {
                         canvasContext: context,
                         viewport: viewport
                     };
-                    await page.render(renderContext).promise;
+                    await page.render(renderContext as any).promise;
                     console.log(`Page ${i} rendered`);
 
                     const imageUrl = canvas.toDataURL('image/jpeg', 0.8);
