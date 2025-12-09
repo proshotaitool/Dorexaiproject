@@ -1,13 +1,12 @@
 import type { NextConfig } from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+
   images: {
     remotePatterns: [
       {
@@ -35,17 +34,25 @@ const nextConfig: NextConfig = {
     config.resolve.alias.canvas = false;
 
     if (!isServer) {
+      const mockPath = path.join(__dirname, 'src/mocks/empty.js');
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
         https: false,
         'node:fs': false,
-        'node:https': false,
       };
 
-      config.resolve.alias['node:fs'] = false;
-      config.resolve.alias['node:https'] = false;
-      config.resolve.alias['pptxgenjs'] = 'pptxgenjs/dist/pptxgen.min.js';
+      config.resolve.alias['node:fs'] = mockPath;
+      config.resolve.alias['pptxgenjs'] = path.join(__dirname, 'node_modules/pptxgenjs/dist/pptxgen.min.js');
+
+      config.plugins.push(
+        new (require('webpack').NormalModuleReplacementPlugin)(
+          /^node:/,
+          (resource: any) => {
+            resource.request = resource.request.replace(/^node:/, '');
+          }
+        )
+      );
     }
 
     return config;
