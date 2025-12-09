@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 type AdUnitProps = {
     slotId: string;
@@ -9,10 +9,20 @@ type AdUnitProps = {
 };
 
 export function AdUnit({ slotId, format = 'auto', className }: AdUnitProps) {
+    const adRef = useRef<HTMLModElement>(null);
+    const isLoaded = useRef(false);
+
     useEffect(() => {
+        // Prevent double execution in strict mode or re-renders
+        if (isLoaded.current) return;
+
         try {
-            // @ts-ignore
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
+            // Check if the element exists and is empty (not already filled by AdSense)
+            if (adRef.current && adRef.current.innerHTML === '') {
+                isLoaded.current = true;
+                // @ts-ignore
+                (window.adsbygoogle = window.adsbygoogle || []).push({});
+            }
         } catch (err) {
             console.error('AdSense error:', err);
         }
@@ -29,6 +39,7 @@ export function AdUnit({ slotId, format = 'auto', className }: AdUnitProps) {
     return (
         <div className={className}>
             <ins
+                ref={adRef}
                 className="adsbygoogle"
                 style={{ display: 'block' }}
                 data-ad-client="ca-pub-7518015096859683"

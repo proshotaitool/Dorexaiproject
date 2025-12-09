@@ -203,28 +203,60 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {toolCategories.map((category) => (
-              <Link key={category.name} href={category.path} className="group block h-full">
-                <Card className={cn(
-                  "h-full transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl border-white/40 bg-white/60 dark:bg-black/40 backdrop-blur-xl overflow-hidden relative",
-                  category.isPremium && "border-yellow-400/50 shadow-yellow-400/10"
-                )}>
-                  {/* Gradient Background on Hover */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+            {toolCategories.map((category) => {
+              let count = 0;
+              if (managedTools) {
+                switch (category.name) {
+                  case 'Image Tools':
+                    count = managedTools.filter(t => t.category === 'Image' && t.enabled).length;
+                    break;
+                  case 'PDF Tools':
+                    count = managedTools.filter(t => t.category === 'PDF' && t.enabled).length;
+                    break;
+                  case 'AI Tools':
+                    count = managedTools.filter(t => t.isAi && t.enabled).length;
+                    break;
+                  case 'Premium Tools':
+                    count = managedTools.filter(t => t.category === 'Premium' && t.enabled).length;
+                    break;
+                  case 'Text Tools':
+                    count = managedTools.filter(t => t.category === 'Text & AI' && t.enabled).length;
+                    break;
+                  case 'Content Tools':
+                    count = managedTools.filter(t => (t.category === 'Text & AI' || t.path === '/tools/youtube-thumbnail-downloader' || t.path === '/tools/meme-generator') && t.enabled).length;
+                    break;
+                }
+              }
 
-                  <CardContent className="p-8 flex flex-col items-center text-center h-full relative z-10">
-                    <div className={`mb-6 p-4 rounded-2xl bg-gradient-to-br ${category.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-                      <category.icon className="h-8 w-8" />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">{category.name}</h3>
-                    <p className="text-muted-foreground mb-6 flex-grow leading-relaxed">{category.description}</p>
-                    <div className="flex items-center text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-                      {t('homepage.toolCategories.viewTools')} <ArrowRight className="ml-2 h-4 w-4" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+              return (
+                <Link key={category.name} href={category.path === '/tools/text-ai' && category.name === 'Content Tools' ? '/tools/content' : category.path} className="group block h-full">
+                  <Card className={cn(
+                    "h-full transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl border-white/40 bg-white/60 dark:bg-black/40 backdrop-blur-xl overflow-hidden relative",
+                    category.isPremium && "border-yellow-400/50 shadow-yellow-400/10"
+                  )}>
+                    {/* Gradient Background on Hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+
+                    <CardContent className="p-8 flex flex-col items-center text-center h-full relative z-10">
+                      <div className={`mb-6 p-4 rounded-2xl bg-gradient-to-br ${category.color} text-white shadow-lg group-hover:scale-110 transition-transform duration-500`}>
+                        <category.icon className="h-8 w-8" />
+                      </div>
+                      <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">{category.name}</h3>
+                      <p className="text-muted-foreground mb-6 flex-grow leading-relaxed">{category.description}</p>
+
+                      {/* Tool Count Badge */}
+                      <div className="mb-4 px-3 py-1 rounded-full bg-secondary/50 text-xs font-medium text-muted-foreground border border-border/50">
+                        {count} Tools Available
+                      </div>
+
+                      <div className="flex items-center text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+                        {t('homepage.toolCategories.viewTools')} <ArrowRight className="ml-2 h-4 w-4" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

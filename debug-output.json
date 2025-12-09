@@ -1,0 +1,531 @@
+{
+  "type": "PageHeader",
+  "page_title": "GlamSphere Bollywood",
+  "content": {
+    "type": "PageHeaderView",
+    "title": {
+      "type": "DynamicTextView",
+      "text": {
+        "text": "GlamSphere Bollywood",
+        "runs": [
+          {
+            "text": "GlamSphere Bollywood",
+            "bold": false,
+            "bracket": false,
+            "deemphasize": false,
+            "italics": false,
+            "strikethrough": false,
+            "error_underline": false,
+            "underline": false
+          }
+        ],
+        "rtl": false
+      },
+      "max_lines": 2
+    },
+    "image": {
+      "type": "DecoratedAvatarView",
+      "avatar": {
+        "type": "AvatarView",
+        "image": [
+          {
+            "url": "https://yt3.googleusercontent.com/ePQEeTAJw-iHuoPzmIOYJkNZa9gvxTQ21w67Rap5vc5wKDtrXNMSQ6s8CUxI52AbV9lS-GYF=s160-c-k-c0x00ffffff-no-rj",
+            "width": 160,
+            "height": 160
+          },
+          {
+            "url": "https://yt3.googleusercontent.com/ePQEeTAJw-iHuoPzmIOYJkNZa9gvxTQ21w67Rap5vc5wKDtrXNMSQ6s8CUxI52AbV9lS-GYF=s120-c-k-c0x00ffffff-no-rj",
+            "width": 120,
+            "height": 120
+          },
+          {
+            "url": "https://yt3.googleusercontent.com/ePQEeTAJw-iHuoPzmIOYJkNZa9gvxTQ21w67Rap5vc5wKDtrXNMSQ6s8CUxI52AbV9lS-GYF=s72-c-k-c0x00ffffff-no-rj",
+            "width": 72,
+            "height": 72
+          }
+        ],
+        "image_processor": {
+          "border_image_processor": {
+            "circular": true
+          }
+        },
+        "avatar_image_size": "AVATAR_SIZE_XL"
+      },
+      "renderer_context": {}
+    },
+    "animated_image": null,
+    "hero_image": null,
+    "metadata": {
+      "type": "ContentMetadataView",
+      "metadata_rows": [
+        {
+          "metadata_parts": [
+            {
+              "text": {
+                "text": "@glamspherebollywood",
+                "runs": [
+                  {
+                    "text": "@glamspherebollywood",
+                    "bold": true,
+                    "bracket": false,
+                    "deemphasize": false,
+                    "italics": false,
+                    "strikethrough": false,
+                    "error_underline": false,
+                    "underline": false
+                  }
+                ],
+                "rtl": false
+              },
+              "avatar_stack": null
+            }
+          ],
+          "badges": []
+        },
+        {
+          "metadata_parts": [
+            {
+              "text": {
+                "text": "5.5K subscribers",
+                "runs": [
+                  {
+                    "text": "5.5K subscribers",
+                    "bold": false,
+                    "bracket": false,
+                    "deemphasize": false,
+                    "italics": false,
+                    "strikethrough": false,
+                    "error_underline": false,
+                    "underline": false
+                  }
+                ],
+                "rtl": false
+              },
+              "avatar_stack": null
+            },
+            {
+              "text": {
+                "text": "84 videos",
+                "runs": [
+                  {
+                    "text": "84 videos",
+                    "bold": false,
+                    "bracket": false,
+                    "deemphasize": false,
+                    "italics": false,
+                    "strikethrough": false,
+                    "error_underline": false,
+                    "underline": false
+                  }
+                ],
+                "rtl": false
+              },
+              "avatar_stack": null
+            }
+          ],
+          "badges": []
+        }
+      ],
+      "delimiter": "•"
+    },
+    "actions": {
+      "type": "FlexibleActionsView",
+      "actions_rows": [
+        {
+          "actions": [
+            {
+              "type": "ButtonView",
+              "button_size": "BUTTON_VIEW_MODEL_SIZE_DEFAULT",
+              "is_full_width": false,
+              "state": "BUTTON_VIEW_MODEL_STATE_ACTIVE",
+              "on_tap": {
+                "type": "NavigationEndpoint",
+                "name": "modalEndpoint",
+                "payload": {
+                  "modal": {
+                    "modalWithTitleAndButtonRenderer": {
+                      "title": {
+                        "simpleText": "Want to subscribe to this channel?"
+                      },
+                      "content": {
+                        "simpleText": "Sign in to subscribe to this channel."
+                      },
+                      "button": {
+                        "buttonRenderer": {
+                          "style": "STYLE_MONO_FILLED",
+                          "size": "SIZE_DEFAULT",
+                          "isDisabled": false,
+                          "text": {
+                            "simpleText": "Sign in"
+                          },
+                          "navigationEndpoint": {
+                            "clickTrackingParams": "CBgQ_YYEIhMI-ufMn76mkQMV1Rl7Bx2ATzI8MglzdWJzY3JpYmXKAQSthKPn",
+                            "commandMetadata": {
+                              "webCommandMetadata": {
+                                "url": "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3D%252F%2540glamspherebollywood%26continue_action%3DQUFFLUhqbXNtcmd6VFluTzdvaGJrWXc0ZVZXS2dESHNuQXxBQ3Jtc0tra2pxWlFJNlNoaDZ4QXJsM0FBZ0N0SHpwUDJPU2NheDNvcHJuVWd1ZFNTajMtOHl1V3lnSVpLNWFQYkVRVy1hU05xYWFrVmlRSExJejdnQ1hiNE5WQXJFYUN6X3lIcWZWVWJNZDduSWRhTFUwTGx4QUNseEVpbW8xNHZmSVRueHZPTTdtXzVKcVBtNXVVeWtJNWJLTWFlN3NycGE3c3J0bE13Uy1nZERsaTk3b0NfeUxOc2xFQkFGcm4yeTdnTGd2dnhDSXU&hl=en&ec=66429",
+                                "webPageType": "WEB_PAGE_TYPE_UNKNOWN",
+                                "rootVe": 83769
+                              }
+                            },
+                            "signInEndpoint": {
+                              "nextEndpoint": {
+                                "clickTrackingParams": "CBgQ_YYEIhMI-ufMn76mkQMV1Rl7Bx2ATzI8ygEErYSj5w==",
+                                "commandMetadata": {
+                                  "webCommandMetadata": {
+                                    "url": "/@glamspherebollywood",
+                                    "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                                    "rootVe": 3611,
+                                    "apiUrl": "/youtubei/v1/browse"
+                                  }
+                                },
+                                "browseEndpoint": {
+                                  "browseId": "UCd9plCT_M_kPxF1fi5Wnb5A",
+                                  "params": "EgA%3D",
+                                  "canonicalBaseUrl": "/@glamspherebollywood"
+                                }
+                              },
+                              "continueAction": "QUFFLUhqbXNtcmd6VFluTzdvaGJrWXc0ZVZXS2dESHNuQXxBQ3Jtc0tra2pxWlFJNlNoaDZ4QXJsM0FBZ0N0SHpwUDJPU2NheDNvcHJuVWd1ZFNTajMtOHl1V3lnSVpLNWFQYkVRVy1hU05xYWFrVmlRSExJejdnQ1hiNE5WQXJFYUN6X3lIcWZWVWJNZDduSWRhTFUwTGx4QUNseEVpbW8xNHZmSVRueHZPTTdtXzVKcVBtNXVVeWtJNWJLTWFlN3NycGE3c3J0bE13Uy1nZERsaTk3b0NfeUxOc2xFQkFGcm4yeTdnTGd2dnhDSXU",
+                              "idamTag": "66429"
+                            }
+                          },
+                          "trackingParams": "CBgQ_YYEIhMI-ufMn76mkQMV1Rl7Bx2ATzI8"
+                        }
+                      }
+                    }
+                  }
+                },
+                "modal": {
+                  "type": "ModalWithTitleAndButton",
+                  "title": {
+                    "text": "Want to subscribe to this channel?",
+                    "rtl": false
+                  },
+                  "content": {
+                    "text": "Sign in to subscribe to this channel.",
+                    "rtl": false
+                  },
+                  "button": {
+                    "type": "Button",
+                    "text": "Sign in",
+                    "style": "STYLE_MONO_FILLED",
+                    "size": "SIZE_DEFAULT",
+                    "is_disabled": false,
+                    "endpoint": {
+                      "type": "NavigationEndpoint",
+                      "name": "signInEndpoint",
+                      "payload": {
+                        "nextEndpoint": {
+                          "clickTrackingParams": "CBgQ_YYEIhMI-ufMn76mkQMV1Rl7Bx2ATzI8ygEErYSj5w==",
+                          "commandMetadata": {
+                            "webCommandMetadata": {
+                              "url": "/@glamspherebollywood",
+                              "webPageType": "WEB_PAGE_TYPE_CHANNEL",
+                              "rootVe": 3611,
+                              "apiUrl": "/youtubei/v1/browse"
+                            }
+                          },
+                          "browseEndpoint": {
+                            "browseId": "UCd9plCT_M_kPxF1fi5Wnb5A",
+                            "params": "EgA%3D",
+                            "canonicalBaseUrl": "/@glamspherebollywood"
+                          }
+                        },
+                        "continueAction": "QUFFLUhqbXNtcmd6VFluTzdvaGJrWXc0ZVZXS2dESHNuQXxBQ3Jtc0tra2pxWlFJNlNoaDZ4QXJsM0FBZ0N0SHpwUDJPU2NheDNvcHJuVWd1ZFNTajMtOHl1V3lnSVpLNWFQYkVRVy1hU05xYWFrVmlRSExJejdnQ1hiNE5WQXJFYUN6X3lIcWZWVWJNZDduSWRhTFUwTGx4QUNseEVpbW8xNHZmSVRueHZPTTdtXzVKcVBtNXVVeWtJNWJLTWFlN3NycGE3c3J0bE13Uy1nZERsaTk3b0NfeUxOc2xFQkFGcm4yeTdnTGd2dnhDSXU",
+                        "idamTag": "66429"
+                      },
+                      "next_endpoint": {
+                        "type": "NavigationEndpoint",
+                        "name": "browseEndpoint",
+                        "payload": {
+                          "browseId": "UCd9plCT_M_kPxF1fi5Wnb5A",
+                          "params": "EgA%3D",
+                          "canonicalBaseUrl": "/@glamspherebollywood"
+                        },
+                        "metadata": {
+                          "url": "/@glamspherebollywood",
+                          "page_type": "WEB_PAGE_TYPE_CHANNEL",
+                          "api_url": "browse"
+                        },
+                        "command": {
+                          "type": "BrowseEndpoint"
+                        }
+                      },
+                      "metadata": {
+                        "url": "https://accounts.google.com/ServiceLogin?service=youtube&uilel=3&passive=true&continue=https%3A%2F%2Fwww.youtube.com%2Fsignin%3Faction_handle_signin%3Dtrue%26app%3Ddesktop%26hl%3Den%26next%3D%252F%2540glamspherebollywood%26continue_action%3DQUFFLUhqbXNtcmd6VFluTzdvaGJrWXc0ZVZXS2dESHNuQXxBQ3Jtc0tra2pxWlFJNlNoaDZ4QXJsM0FBZ0N0SHpwUDJPU2NheDNvcHJuVWd1ZFNTajMtOHl1V3lnSVpLNWFQYkVRVy1hU05xYWFrVmlRSExJejdnQ1hiNE5WQXJFYUN6X3lIcWZWVWJNZDduSWRhTFUwTGx4QUNseEVpbW8xNHZmSVRueHZPTTdtXzVKcVBtNXVVeWtJNWJLTWFlN3NycGE3c3J0bE13Uy1nZERsaTk3b0NfeUxOc2xFQkFGcm4yeTdnTGd2dnhDSXU&hl=en&ec=66429",
+                        "page_type": "WEB_PAGE_TYPE_UNKNOWN"
+                      }
+                    }
+                  }
+                },
+                "metadata": {}
+              },
+              "style": "BUTTON_VIEW_MODEL_STYLE_MONO",
+              "title": "Subscribe",
+              "button_type": "BUTTON_VIEW_MODEL_TYPE_FILLED",
+              "accessibility_text": "Subscribe"
+            }
+          ]
+        }
+      ]
+    },
+    "description": {
+      "type": "DescriptionPreviewView",
+      "description": {
+        "text": "More about this channel ",
+        "runs": [
+          {
+            "text": "More about this channel ",
+            "bold": false,
+            "bracket": false,
+            "deemphasize": false,
+            "italics": false,
+            "strikethrough": false,
+            "error_underline": false,
+            "underline": false
+          }
+        ],
+        "rtl": false
+      },
+      "max_lines": 2,
+      "truncation_text": {
+        "text": "...more",
+        "runs": [
+          {
+            "text": "...more",
+            "bold": false,
+            "bracket": false,
+            "deemphasize": false,
+            "italics": false,
+            "strikethrough": false,
+            "error_underline": false,
+            "underline": false
+          }
+        ],
+        "rtl": false
+      },
+      "always_show_truncation_text": true,
+      "more_endpoint": {
+        "show_engagement_panel_endpoint": {
+          "engagement_panel": {
+            "type": "EngagementPanelSectionList",
+            "header": {
+              "type": "EngagementPanelTitleHeader",
+              "title": {
+                "text": "GlamSphere Bollywood",
+                "rtl": false
+              },
+              "visibility_button": {
+                "type": "Button",
+                "label": "Close",
+                "style": "STYLE_DEFAULT",
+                "size": "SIZE_DEFAULT",
+                "icon_type": "CLOSE",
+                "is_disabled": false,
+                "endpoint": {
+                  "type": "NavigationEndpoint",
+                  "payload": {},
+                  "metadata": {},
+                  "command": {
+                    "type": "ChangeEngagementPanelVisibilityAction",
+                    "target_id": "6a3f60a5-0000-2f80-92ed-582429be5568",
+                    "visibility": "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
+                  }
+                },
+                "accessibility": {
+                  "accessibility_data": {
+                    "label": "Close"
+                  }
+                }
+              },
+              "menu": null
+            },
+            "content": {
+              "type": "SectionList",
+              "contents": [
+                {
+                  "type": "ItemSection",
+                  "header": null,
+                  "contents": [
+                    {
+                      "type": "ContinuationItem",
+                      "trigger": "CONTINUATION_TRIGGER_ON_ITEM_SHOWN",
+                      "endpoint": {
+                        "type": "NavigationEndpoint",
+                        "name": "continuationCommand",
+                        "payload": {
+                          "token": "4qmFsgJgEhhVQ2Q5cGxDVF9NX2tQeEYxZmk1V25iNUEaRDhnWXJHaW1hQVNZS0pEWmhNMlkyTUdFMkxUQXdNREF0TW1ZNE1DMDVNbVZrTFRVNE1qUXlPV0psTlRVMk9BJTNEJTNE",
+                          "request": "CONTINUATION_REQUEST_TYPE_BROWSE"
+                        },
+                        "metadata": {
+                          "api_url": "browse",
+                          "send_post": true
+                        },
+                        "command": {
+                          "type": "ContinuationCommand"
+                        }
+                      }
+                    }
+                  ],
+                  "target_id": "6a3f60a6-0000-2f80-92ed-582429be5568"
+                }
+              ]
+            },
+            "target_id": "6a3f60a5-0000-2f80-92ed-582429be5568",
+            "identifier": {
+              "surface": "ENGAGEMENT_PANEL_SURFACE_BROWSE",
+              "tag": "6a3f60a5-0000-2f80-92ed-582429be5568"
+            }
+          },
+          "engagement_panel_popup_type": "PANEL_POPUP_TYPE_DIALOG",
+          "identifier": {
+            "surface": "ENGAGEMENT_PANEL_SURFACE_BROWSE",
+            "tag": "6a3f60a5-0000-2f80-92ed-582429be5568"
+          }
+        }
+      },
+      "renderer_context": {
+        "command_context": {
+          "on_tap": {
+            "type": "NavigationEndpoint",
+            "name": "showEngagementPanelEndpoint",
+            "payload": {
+              "engagementPanel": {
+                "engagementPanelSectionListRenderer": {
+                  "header": {
+                    "engagementPanelTitleHeaderRenderer": {
+                      "title": {
+                        "simpleText": "GlamSphere Bollywood"
+                      },
+                      "visibilityButton": {
+                        "buttonRenderer": {
+                          "style": "STYLE_DEFAULT",
+                          "size": "SIZE_DEFAULT",
+                          "isDisabled": false,
+                          "icon": {
+                            "iconType": "CLOSE"
+                          },
+                          "accessibility": {
+                            "label": "Close"
+                          },
+                          "trackingParams": "CBYQ8FsiEwj658yfvqaRAxXVGXsHHYBPMjw=",
+                          "accessibilityData": {
+                            "accessibilityData": {
+                              "label": "Close"
+                            }
+                          },
+                          "command": {
+                            "clickTrackingParams": "CBYQ8FsiEwj658yfvqaRAxXVGXsHHYBPMjzKAQSthKPn",
+                            "changeEngagementPanelVisibilityAction": {
+                              "targetId": "6a3f60a5-0000-2f80-92ed-582429be5568",
+                              "visibility": "ENGAGEMENT_PANEL_VISIBILITY_HIDDEN"
+                            }
+                          }
+                        }
+                      },
+                      "trackingParams": "CBMQ040EIhMI-ufMn76mkQMV1Rl7Bx2ATzI8"
+                    }
+                  },
+                  "content": {
+                    "sectionListRenderer": {
+                      "contents": [
+                        {
+                          "itemSectionRenderer": {
+                            "contents": [
+                              {
+                                "continuationItemRenderer": {
+                                  "trigger": "CONTINUATION_TRIGGER_ON_ITEM_SHOWN",
+                                  "continuationEndpoint": {
+                                    "clickTrackingParams": "CBUQuy8YACITCPrnzJ--ppEDFdUZewcdgE8yPMoBBK2Eo-c=",
+                                    "commandMetadata": {
+                                      "webCommandMetadata": {
+                                        "sendPost": true,
+                                        "apiUrl": "/youtubei/v1/browse"
+                                      }
+                                    },
+                                    "continuationCommand": {
+                                      "token": "4qmFsgJgEhhVQ2Q5cGxDVF9NX2tQeEYxZmk1V25iNUEaRDhnWXJHaW1hQVNZS0pEWmhNMlkyTUdFMkxUQXdNREF0TW1ZNE1DMDVNbVZrTFRVNE1qUXlPV0psTlRVMk9BJTNEJTNE",
+                                      "request": "CONTINUATION_REQUEST_TYPE_BROWSE"
+                                    }
+                                  }
+                                }
+                              }
+                            ],
+                            "trackingParams": "CBUQuy8YACITCPrnzJ--ppEDFdUZewcdgE8yPA==",
+                            "sectionIdentifier": "6a3f60a6-0000-2f80-92ed-582429be5568",
+                            "targetId": "6a3f60a6-0000-2f80-92ed-582429be5568"
+                          }
+                        }
+                      ],
+                      "trackingParams": "CBQQui8iEwj658yfvqaRAxXVGXsHHYBPMjw=",
+                      "scrollPaneStyle": {
+                        "scrollable": true
+                      }
+                    }
+                  },
+                  "targetId": "6a3f60a5-0000-2f80-92ed-582429be5568",
+                  "identifier": {
+                    "surface": "ENGAGEMENT_PANEL_SURFACE_BROWSE",
+                    "tag": "6a3f60a5-0000-2f80-92ed-582429be5568"
+                  }
+                }
+              },
+              "identifier": {
+                "surface": "ENGAGEMENT_PANEL_SURFACE_BROWSE",
+                "tag": "6a3f60a5-0000-2f80-92ed-582429be5568"
+              },
+              "engagementPanelPresentationConfigs": {
+                "engagementPanelPopupPresentationConfig": {
+                  "popupType": "PANEL_POPUP_TYPE_DIALOG"
+                }
+              }
+            },
+            "metadata": {},
+            "command": {
+              "type": "ShowEngagementPanelEndpoint"
+            }
+          }
+        },
+        "accessibility_context": {
+          "label": "Description. More about this channel...tap for more."
+        }
+      }
+    },
+    "attributation": null,
+    "banner": {
+      "type": "ImageBannerView",
+      "image": [
+        {
+          "url": "https://yt3.googleusercontent.com/sgv8CHxdw3SuUzZU8r-Uax8VKNAOAhzK19iXtki0r2tQ5g-FFMsnQ7Tq0TuJXekStcP17t8U=w2560-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+          "width": 2560,
+          "height": 424
+        },
+        {
+          "url": "https://yt3.googleusercontent.com/sgv8CHxdw3SuUzZU8r-Uax8VKNAOAhzK19iXtki0r2tQ5g-FFMsnQ7Tq0TuJXekStcP17t8U=w2276-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+          "width": 2276,
+          "height": 377
+        },
+        {
+          "url": "https://yt3.googleusercontent.com/sgv8CHxdw3SuUzZU8r-Uax8VKNAOAhzK19iXtki0r2tQ5g-FFMsnQ7Tq0TuJXekStcP17t8U=w2120-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+          "width": 2120,
+          "height": 351
+        },
+        {
+          "url": "https://yt3.googleusercontent.com/sgv8CHxdw3SuUzZU8r-Uax8VKNAOAhzK19iXtki0r2tQ5g-FFMsnQ7Tq0TuJXekStcP17t8U=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+          "width": 1707,
+          "height": 283
+        },
+        {
+          "url": "https://yt3.googleusercontent.com/sgv8CHxdw3SuUzZU8r-Uax8VKNAOAhzK19iXtki0r2tQ5g-FFMsnQ7Tq0TuJXekStcP17t8U=w1138-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+          "width": 1138,
+          "height": 188
+        },
+        {
+          "url": "https://yt3.googleusercontent.com/sgv8CHxdw3SuUzZU8r-Uax8VKNAOAhzK19iXtki0r2tQ5g-FFMsnQ7Tq0TuJXekStcP17t8U=w1060-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+          "width": 1060,
+          "height": 175
+        }
+      ],
+      "style": "IMAGE_BANNER_STYLE_INSET"
+    }
+  }
+}

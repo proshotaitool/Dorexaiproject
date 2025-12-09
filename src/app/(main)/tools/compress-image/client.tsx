@@ -452,7 +452,7 @@ export default function CompressImageClient() {
                     onDrop={handleDrop}
                 >
                     <input type="file" ref={fileInputRef} onChange={handleFileInput} className="hidden" accept="image/*" multiple />
-                    <div className="border-2 border-dashed rounded-xl p-12 hover:border-primary transition-colors cursor-pointer text-center" onClick={handleUploadClick}>
+                    <div className="border-2 border-dashed rounded-xl p-12 hover:border-blue-500 hover:bg-blue-50/50 hover:shadow-lg transition-all duration-300 cursor-pointer text-center" onClick={handleUploadClick}>
                         <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
                         <h3 className="mt-4 text-lg font-semibold">Drag & drop your images here</h3>
                         <p className="text-muted-foreground mt-2">or</p>

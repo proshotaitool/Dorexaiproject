@@ -14,12 +14,12 @@ export default function DownloadPage() {
     const hasDownloaded = useRef(false);
 
     useEffect(() => {
-        const storedImage = sessionStorage.getItem('download-image');
-        if (!storedImage) {
-            router.replace('/'); // Redirect home if no image found
+        const storedUrl = sessionStorage.getItem('download-url') || sessionStorage.getItem('download-image');
+        if (!storedUrl) {
+            router.replace('/'); // Redirect home if no file found
             return;
         }
-        setDownloadUrl(storedImage);
+        setDownloadUrl(storedUrl);
     }, [router]);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export default function DownloadPage() {
 
             const link = document.createElement('a');
             link.href = blobUrl;
-            const filename = sessionStorage.getItem('download-filename') || 'dorex-ai-edited.jpg';
+            const filename = sessionStorage.getItem('download-filename') || 'dorex-ai-file';
             link.download = filename;
             document.body.appendChild(link);
             link.click();
@@ -75,7 +75,7 @@ export default function DownloadPage() {
                 <CardHeader>
                     <CardTitle className="text-2xl">Your Download is Ready!</CardTitle>
                     <CardDescription>
-                        Your edited image will start downloading automatically in {timeLeft} seconds.
+                        Your file will start downloading automatically in {timeLeft} seconds.
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">

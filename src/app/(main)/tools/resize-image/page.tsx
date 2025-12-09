@@ -479,7 +479,7 @@ export default function ResizeImagePage() {
             >
               <input type="file" ref={fileInputRef} onChange={handleFileInput} className="hidden" accept="image/*" multiple />
               <CardContent className="p-6 text-center w-full flex flex-col items-center justify-center">
-                <div className="border-2 border-dashed rounded-xl p-8 hover:border-primary transition-colors cursor-pointer w-full flex flex-col items-center justify-center" onClick={handleUploadClick}>
+                <div className="border-2 border-dashed rounded-xl p-8 hover:border-blue-500 hover:bg-blue-50/50 hover:shadow-lg transition-all duration-300 cursor-pointer w-full flex flex-col items-center justify-center" onClick={handleUploadClick}>
                   <Upload className="h-10 w-10 text-muted-foreground" />
                   <h3 className="mt-4 text-lg font-semibold">Drag & drop your images here</h3>
                   <p className="text-muted-foreground mt-2">or</p>

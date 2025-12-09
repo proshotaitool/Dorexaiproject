@@ -8,7 +8,7 @@
  * - SummarizeTextOutput - The return type for the summarizeText function.
  */
 
-import { ai } from '@/ai/genkit';
+import { ai, configureGenkit } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const SummarizeTextInputSchema = z.object({
@@ -25,14 +25,6 @@ export async function summarizeText(input: SummarizeTextInput): Promise<Summariz
   return summarizeTextFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'summarizeTextPrompt',
-  input: { schema: SummarizeTextInputSchema },
-  output: { schema: SummarizeTextOutputSchema },
-  prompt: `Summarize the following text:\n\n{{text}}`,
-  model: 'openai/gpt-4o',
-});
-
 const summarizeTextFlow = ai.defineFlow(
   {
     name: 'summarizeTextFlow',
@@ -40,7 +32,14 @@ const summarizeTextFlow = ai.defineFlow(
     outputSchema: SummarizeTextOutputSchema,
   },
   async input => {
-    const { output } = await prompt(input);
+    const generate = configureGenkit();
+    const prompt = `Summarize the following text:\n\n${input.text}`;
+
+    const { output } = await generate({
+      prompt,
+      model: 'googleai/gemini-1.5-flash',
+      output: { schema: SummarizeTextOutputSchema },
+    });
     return output!;
   }
 );

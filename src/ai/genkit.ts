@@ -11,7 +11,7 @@ export const ai = genkit({
 // This function now returns another function that handles the generation with rotation.
 export function configureGenkit(userApiKey?: string) {
     // This is the function that will be called by the flows.
-    return async function generateWithRotation(options: GenerateOptions): Promise<{ media: any; text: any; }> {
+    return async function generateWithRotation(options: GenerateOptions): Promise<{ media: any; text: any; output?: any }> {
         let attempts = 0;
         const maxAttempts = getApiKeyCount();
 
@@ -30,7 +30,7 @@ export function configureGenkit(userApiKey?: string) {
 
                 // Perform the actual generation call
                 const result = await localAI.generate(options);
-                return { media: result.media, text: result.text };
+                return { media: result.media, text: result.text, output: result.output };
 
             } catch (error: any) {
                 console.error(`Attempt ${attempts + 1} failed:`, error.message);
