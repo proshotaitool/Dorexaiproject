@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -16,8 +16,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -25,7 +23,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
   DialogClose,
 } from '@/components/ui/dialog';
@@ -43,14 +40,13 @@ import {
   Loader2,
   Edit,
   Trash2,
-  Eye,
   Infinity,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
 import { useCollection, useFirestore } from '@/firebase';
-import { collection, doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, setDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -70,217 +66,239 @@ type User = {
 };
 
 type Plan = {
-    id: string;
-    name: string;
-    price: {
-        monthly: string;
-        yearly: string;
-    };
-    features: string[];
-    credits: number; // -1 for unlimited
-    isPopular?: boolean;
+  id: string;
+  name: string;
+  price: {
+    monthly: string;
+    yearly: string;
+  };
+  features: string[];
+  credits: number; // -1 for unlimited
+  isPopular?: boolean;
 }
 
 const initialPlans: Plan[] = [
-    { id: '1', name: 'Free', price: { monthly: '$0', yearly: '$0' }, features: ['Basic Tool Access', 'Limited File Processing', 'Standard Support'], credits: 100 },
-    { id: '2', name: 'Pro', price: { monthly: '$10/month', yearly: '$96/year' }, features: ['Full Tool Access', 'Priority Processing', 'Ad-Free Experience', 'Priority Support'], isPopular: true, credits: 500 },
-    { id: '3', name: 'Business', price: { monthly: 'Custom', yearly: 'Custom' }, features: ['Everything in Pro', 'Team Management', 'API Access', 'Dedicated Support'], credits: -1 },
+  { id: '1', name: 'Free', price: { monthly: '$0', yearly: '$0' }, features: ['Basic Tool Access', 'Limited File Processing', 'Standard Support'], credits: 100 },
+  { id: '2', name: 'Pro', price: { monthly: '$10/month', yearly: '$96/year' }, features: ['Full Tool Access', 'Priority Processing', 'Ad-Free Experience', 'Priority Support'], isPopular: true, credits: 500 },
+  { id: '3', name: 'Business', price: { monthly: 'Custom', yearly: 'Custom' }, features: ['Everything in Pro', 'Team Management', 'API Access', 'Dedicated Support'], credits: -1 },
 ];
 
-const PlanEditDialog = ({ plan, open, onOpenChange, onSave }: { plan: Partial<Plan> | null; open: boolean; onOpenChange: (open: boolean) => void; onSave: (data: Plan) => void }) => {
-    const isEditing = !!plan?.id;
-    const [name, setName] = useState('');
-    const [monthlyPrice, setMonthlyPrice] = useState('');
-    const [yearlyPrice, setYearlyPrice] = useState('');
-    const [features, setFeatures] = useState('');
-    const [credits, setCredits] = useState<number | string>(100);
-    const [isUnlimited, setIsUnlimited] = useState(false);
+const PlanEditDialog = ({ plan, open, onOpenChange, onSave }: { plan: Partial<Plan> | null; open: boolean; onOpenChange: (open: boolean) => void; onSave: (data: Plan) => Promise<void> }) => {
+  const isEditing = !!plan?.id;
+  const [name, setName] = useState('');
+  const [monthlyPrice, setMonthlyPrice] = useState('');
+  const [yearlyPrice, setYearlyPrice] = useState('');
+  const [features, setFeatures] = useState('');
+  const [credits, setCredits] = useState<number | string>(100);
+  const [isUnlimited, setIsUnlimited] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-    useEffect(() => {
-        if(plan) {
-            setName(plan.name || '');
-            setMonthlyPrice(plan.price?.monthly || '');
-            setYearlyPrice(plan.price?.yearly || '');
-            setFeatures(plan.features?.join('\n') || '');
-            setIsUnlimited(plan.credits === -1);
-            setCredits(plan.credits === -1 ? '' : (plan.credits || 100));
-        } else {
-            setName('');
-            setMonthlyPrice('');
-            setYearlyPrice('');
-            setFeatures('');
-            setCredits(100);
-            setIsUnlimited(false);
-        }
-    }, [plan]);
-    
-    useEffect(() => {
-      if (isUnlimited) {
-        setCredits('');
-      }
-    }, [isUnlimited]);
+  useEffect(() => {
+    if (plan) {
+      setName(plan.name || '');
+      setMonthlyPrice(plan.price?.monthly || '');
+      setYearlyPrice(plan.price?.yearly || '');
+      setFeatures(plan.features?.join('\n') || '');
+      setIsUnlimited(plan.credits === -1);
+      setCredits(plan.credits === -1 ? '' : (plan.credits || 100));
+    } else {
+      setName('');
+      setMonthlyPrice('');
+      setYearlyPrice('');
+      setFeatures('');
+      setCredits(100);
+      setIsUnlimited(false);
+    }
+  }, [plan]);
 
-    const handleSave = () => {
-        const planData: Plan = {
-            id: plan?.id || Date.now().toString(),
-            name,
-            price: {
-                monthly: monthlyPrice,
-                yearly: yearlyPrice
-            },
-            features: features.split('\n').filter(f => f.trim() !== ''),
-            credits: isUnlimited ? -1 : Number(credits) || 0,
-        };
-        onSave(planData);
+  useEffect(() => {
+    if (isUnlimited) {
+      setCredits('');
+    }
+  }, [isUnlimited]);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    const planData: Plan = {
+      id: plan?.id || '', // ID handle by parent or Firestore
+      name,
+      price: {
+        monthly: monthlyPrice,
+        yearly: yearlyPrice
+      },
+      features: features.split('\n').filter(f => f.trim() !== ''),
+      credits: isUnlimited ? -1 : Number(credits) || 0,
     };
+    await onSave(planData);
+    setIsSaving(false);
+  };
 
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{isEditing ? 'Edit Plan' : 'Add New Plan'}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
-                    <div className="space-y-2">
-                        <Label htmlFor="plan-name">Plan Name</Label>
-                        <Input id="plan-name" value={name} onChange={e => setName(e.target.value)} />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="plan-monthly-price">Monthly Price</Label>
-                            <Input id="plan-monthly-price" value={monthlyPrice} onChange={e => setMonthlyPrice(e.target.value)} placeholder="$10/month" />
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="plan-yearly-price">Yearly Price</Label>
-                            <Input id="plan-yearly-price" value={yearlyPrice} onChange={e => setYearlyPrice(e.target.value)} placeholder="$96/year" />
-                        </div>
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="plan-features">Features (one per line)</Label>
-                        <Textarea id="plan-features" value={features} onChange={e => setFeatures(e.target.value)} className="min-h-[120px]" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label>Daily Credits</Label>
-                        <div className='flex items-center gap-4'>
-                             <Input 
-                                type="number" 
-                                value={credits} 
-                                onChange={e => setCredits(e.target.value)} 
-                                placeholder="e.g., 100"
-                                disabled={isUnlimited}
-                             />
-                            <div className="flex items-center space-x-2">
-                                <Switch id="unlimited-credits" checked={isUnlimited} onCheckedChange={setIsUnlimited} />
-                                <Label htmlFor="unlimited-credits">Unlimited</Label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                    </DialogClose>
-                    <Button onClick={handleSave}>Save Plan</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{isEditing ? 'Edit Plan' : 'Add New Plan'}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto pr-2">
+          <div className="space-y-2">
+            <Label htmlFor="plan-name">Plan Name</Label>
+            <Input id="plan-name" value={name} onChange={e => setName(e.target.value)} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="plan-monthly-price">Monthly Price</Label>
+              <Input id="plan-monthly-price" value={monthlyPrice} onChange={e => setMonthlyPrice(e.target.value)} placeholder="$10/month" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="plan-yearly-price">Yearly Price</Label>
+              <Input id="plan-yearly-price" value={yearlyPrice} onChange={e => setYearlyPrice(e.target.value)} placeholder="$96/year" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="plan-features">Features (one per line)</Label>
+            <Textarea id="plan-features" value={features} onChange={e => setFeatures(e.target.value)} className="min-h-[120px]" />
+          </div>
+          <div className="space-y-2">
+            <Label>Daily Credits</Label>
+            <div className='flex items-center gap-4'>
+              <Input
+                type="number"
+                value={credits}
+                onChange={e => setCredits(e.target.value)}
+                placeholder="e.g., 100"
+                disabled={isUnlimited}
+              />
+              <div className="flex items-center space-x-2">
+                <Switch id="unlimited-credits" checked={isUnlimited} onCheckedChange={setIsUnlimited} />
+                <Label htmlFor="unlimited-credits">Unlimited</Label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Plan
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 const UserSubscriptionDialog = ({ user, open, onOpenChange, onUserUpdated }: { user: User | null; open: boolean; onOpenChange: (open: boolean) => void; onUserUpdated: () => void }) => {
-    const [plan, setPlan] = useState<User['plan']>('Free');
-    const [status, setStatus] = useState<User['status']>('Active');
-    const [isSaving, setIsSaving] = useState(false);
-    const firestore = useFirestore();
-    const { toast } = useToast();
+  const [plan, setPlan] = useState<User['plan']>('Free');
+  const [status, setStatus] = useState<User['status']>('Active');
+  const [isSaving, setIsSaving] = useState(false);
+  const firestore = useFirestore();
+  const { toast } = useToast();
 
-    useEffect(() => {
-        if(user) {
-            setPlan(user.plan);
-            setStatus(user.status);
-        }
-    }, [user]);
-    
-    const handleSave = async () => {
-      if(!user || !firestore) return;
-      setIsSaving(true);
-      try {
-        const userRef = doc(firestore, 'users', user.id);
-        await updateDoc(userRef, { plan, status });
-        toast({ title: "Subscription Updated", description: "The user's subscription details have been updated." });
-        onUserUpdated();
-        onOpenChange(false);
-      } catch (error) {
-        toast({ title: "Error", description: "Failed to update subscription.", variant: "destructive" });
-      } finally {
-        setIsSaving(false);
-      }
-    };
-    
-    if(!user) return null;
+  useEffect(() => {
+    if (user) {
+      setPlan(user.plan);
+      setStatus(user.status);
+    }
+  }, [user]);
 
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Edit Subscription for {user.name}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                        <Label>Plan</Label>
-                        <Select value={plan} onValueChange={(v) => setPlan(v as User['plan'])}>
-                            <SelectTrigger><SelectValue/></SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Free">Free</SelectItem>
-                                <SelectItem value="Pro">Pro</SelectItem>
-                                <SelectItem value="Business">Business</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                     <div className="space-y-2">
-                        <Label>Status</Label>
-                        <Select value={status} onValueChange={(v) => setStatus(v as User['status'])}>
-                            <SelectTrigger><SelectValue/></SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Active">Active</SelectItem>
-                                <SelectItem value="Suspended">Suspended</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-                    <Button onClick={handleSave} disabled={isSaving}>
-                        {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin"/>}
-                        Save Changes
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    )
+  const handleSave = async () => {
+    if (!user || !firestore) return;
+    setIsSaving(true);
+    try {
+      const userRef = doc(firestore, 'users', user.id);
+      await updateDoc(userRef, { plan, status });
+      toast({ title: "Subscription Updated", description: "The user's subscription details have been updated." });
+      onUserUpdated();
+      onOpenChange(false);
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update subscription.", variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (!user) return null;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Subscription for {user.name}</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label>Plan</Label>
+            <Select value={plan} onValueChange={(v) => setPlan(v as User['plan'])}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Free">Free</SelectItem>
+                <SelectItem value="Pro">Pro</SelectItem>
+                <SelectItem value="Business">Business</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label>Status</Label>
+            <Select value={status} onValueChange={(v) => setStatus(v as User['status'])}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Active">Active</SelectItem>
+                <SelectItem value="Suspended">Suspended</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
 }
 
 export default function SubscriptionsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterPlan, setFilterPlan] = useState('all');
-  
+
   const firestore = useFirestore();
-  const usersCollection = useMemo(() => {
-    if (!firestore) return null;
-    return collection(firestore, 'users');
-  }, [firestore]);
+  const { toast } = useToast();
 
-  const { data: users, isLoading: usersLoading, error } = useCollection<User>(usersCollection!);
+  // Users Collection
+  const usersCollection = useMemo(() => firestore ? collection(firestore, 'users') : null, [firestore]);
+  const { data: users, isLoading: usersLoading, error } = useCollection<User>(usersCollection as any);
 
-  const [plans, setPlans] = useState<Plan[]>(initialPlans);
+  // Plans Collection
+  const plansCollection = useMemo(() => firestore ? collection(firestore, 'subscription-plans') : null, [firestore]);
+  const { data: plansFromDb, isLoading: plansLoading } = useCollection<Plan>(plansCollection as any);
+
   const [editingPlan, setEditingPlan] = useState<Partial<Plan> | null>(null);
   const [isPlanDialogOpen, setIsPlanDialogOpen] = useState(false);
   const [deletingPlan, setDeletingPlan] = useState<Plan | null>(null);
 
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isUserSubDialogOpen, setIsUserSubDialogOpen] = useState(false);
-  
-  const { toast } = useToast();
+
+  // Seed Plans if empty
+  useEffect(() => {
+    const seedPlans = async () => {
+      if (!firestore || plansLoading) return;
+      if (!plansFromDb || plansFromDb.length === 0) {
+        console.log("Seeding subscription plans...");
+        const batch = initialPlans.map(plan => setDoc(doc(firestore, 'subscription-plans', plan.id), plan));
+        await Promise.all(batch);
+      }
+    };
+    seedPlans();
+  }, [firestore, plansFromDb, plansLoading]);
+
+  // Use DB plans or empty (wait for seed)
+  const plans = plansFromDb || [];
 
   const handleAddPlan = () => {
     setEditingPlan(null);
@@ -292,35 +310,46 @@ export default function SubscriptionsPage() {
     setIsPlanDialogOpen(true);
   }
 
-  const handleSavePlan = (planData: Plan) => {
-    if (editingPlan?.id) { // Editing existing
-        setPlans(plans.map(p => p.id === planData.id ? planData : p));
+  const handleSavePlan = async (planData: Plan) => {
+    if (!firestore) return;
+    try {
+      if (editingPlan?.id) { // Editing existing
+        await setDoc(doc(firestore, 'subscription-plans', editingPlan.id), planData, { merge: true });
         toast({ title: "Plan Updated", description: "The plan has been successfully updated." });
-    } else { // Adding new
-        setPlans([...plans, planData]);
+      } else { // Adding new
+        await addDoc(collection(firestore, 'subscription-plans'), planData);
         toast({ title: "Plan Added", description: "The new plan has been created." });
+      }
+      setIsPlanDialogOpen(false);
+    } catch (e) {
+      console.error(e);
+      toast({ title: 'Error', description: 'Failed to save plan.', variant: 'destructive' });
     }
-    setIsPlanDialogOpen(false);
   }
 
-  const handleDeletePlan = () => {
-    if (deletingPlan) {
-        setPlans(plans.filter(p => p.id !== deletingPlan.id));
+  const handleDeletePlan = async () => {
+    if (deletingPlan && firestore) {
+      try {
+        await deleteDoc(doc(firestore, 'subscription-plans', deletingPlan.id));
         toast({ title: "Plan Deleted", description: "The plan has been successfully deleted.", variant: 'destructive' });
+      } catch (e) {
+        console.error(e);
+        toast({ title: 'Error', description: 'Failed to delete plan.', variant: 'destructive' });
+      } finally {
         setDeletingPlan(null);
+      }
     }
   }
-
 
   const subscribedUsers = useMemo(() => {
     if (!users) return [];
-    
+
     return users.filter(user => {
       const isSubscribed = user.plan === 'Pro' || user.plan === 'Business';
       const planMatch = filterPlan === 'all' || user.plan.toLowerCase() === filterPlan;
-      const searchMatch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          user.email.toLowerCase().includes(searchTerm.toLowerCase());
-      
+      const searchMatch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+
       return isSubscribed && planMatch && searchMatch;
     });
   }, [users, filterPlan, searchTerm]);
@@ -337,57 +366,61 @@ export default function SubscriptionsPage() {
           Add New Plan
         </Button>
       </div>
-      
-       <div className="space-y-6">
-          <Card>
-            <CardHeader>
-                <CardTitle>Manage Plans</CardTitle>
-                <CardDescription>Add, edit, or delete subscription plans.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {plans.map(plan => (
-                        <Card key={plan.id} className={cn("flex flex-col", plan.isPopular && "border-primary ring-2 ring-primary/20")}>
-                            <CardHeader>
-                                <div className="flex justify-between items-center">
-                                    <CardTitle>{plan.name}</CardTitle>
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4"/></Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuItem onClick={() => handleEditPlan(plan)}><Edit className="mr-2 h-4 w-4"/>Edit</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setDeletingPlan(plan)} className="text-red-500"><Trash2 className="mr-2 h-4 w-4"/>Delete</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </div>
-                                <div className="text-2xl font-bold">{plan.price.monthly}</div>
-                                {plan.price.yearly !== plan.price.monthly && <p className="text-sm text-muted-foreground">or {plan.price.yearly}</p>}
-                            </CardHeader>
-                            <CardContent className="flex-1 space-y-4">
-                                <ul className="space-y-2 text-sm text-admin-muted-foreground">
-                                    {plan.features.map((feature, i) => (
-                                        <li key={i} className="flex items-center gap-2">
-                                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-                                            <span>{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                            <CardFooter>
-                                <Badge variant="outline" className="w-full justify-center py-2">
-                                    {plan.credits === -1 ? (
-                                        <><Infinity className="mr-2 h-4 w-4"/> Unlimited Credits</>
-                                    ) : (
-                                        `${plan.credits} Daily Credits`
-                                    )}
-                                </Badge>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-            </CardContent>
-          </Card>
+
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Manage Plans</CardTitle>
+            <CardDescription>Add, edit, or delete subscription plans.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {plansLoading ? (
+              <div className="flex justify-center py-8"><Loader2 className="h-8 w-8 animate-spin" /></div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {plans.map(plan => (
+                  <Card key={plan.id} className={cn("flex flex-col", plan.isPopular && "border-primary ring-2 ring-primary/20")}>
+                    <CardHeader>
+                      <div className="flex justify-between items-center">
+                        <CardTitle>{plan.name}</CardTitle>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4" /></Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => handleEditPlan(plan)}><Edit className="mr-2 h-4 w-4" />Edit</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setDeletingPlan(plan)} className="text-red-500"><Trash2 className="mr-2 h-4 w-4" />Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <div className="text-2xl font-bold">{plan.price.monthly}</div>
+                      {plan.price.yearly !== plan.price.monthly && <p className="text-sm text-muted-foreground">or {plan.price.yearly}</p>}
+                    </CardHeader>
+                    <CardContent className="flex-1 space-y-4">
+                      <ul className="space-y-2 text-sm text-admin-muted-foreground">
+                        {plan.features.map((feature, i) => (
+                          <li key={i} className="flex items-center gap-2">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                    <CardFooter>
+                      <Badge variant="outline" className="w-full justify-center py-2">
+                        {plan.credits === -1 ? (
+                          <><Infinity className="mr-2 h-4 w-4" /> Unlimited Credits</>
+                        ) : (
+                          `${plan.credits} Daily Credits`
+                        )}
+                      </Badge>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
@@ -436,7 +469,7 @@ export default function SubscriptionsPage() {
                     </TableCell>
                   </TableRow>
                 ) : error ? (
-                   <TableRow>
+                  <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center text-red-500">
                       Error loading users: {error.message}
                     </TableCell>
@@ -486,7 +519,7 @@ export default function SubscriptionsPage() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => { setEditingUser(user); setIsUserSubDialogOpen(true); }}>
-                                <Edit className="mr-2 h-4 w-4"/>Edit Subscription
+                              <Edit className="mr-2 h-4 w-4" />Edit Subscription
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -507,38 +540,29 @@ export default function SubscriptionsPage() {
       </Card>
 
       <PlanEditDialog open={isPlanDialogOpen} onOpenChange={setIsPlanDialogOpen} plan={editingPlan} onSave={handleSavePlan} />
-      
+
       <AlertDialog open={!!deletingPlan} onOpenChange={(open) => !open && setDeletingPlan(null)}>
         <AlertDialogContent>
-            <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure you want to delete this plan?</AlertDialogTitle>
-                <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete the "{deletingPlan?.name}" plan.
-                </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeletePlan} className={buttonVariants({ variant: 'destructive'})}>
-                    Delete
-                </AlertDialogAction>
-            </AlertDialogFooter>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to delete this plan?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the "{deletingPlan?.name}" plan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeletePlan} className={buttonVariants({ variant: 'destructive' })}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      <UserSubscriptionDialog 
+      <UserSubscriptionDialog
         user={editingUser}
         open={isUserSubDialogOpen}
         onOpenChange={setIsUserSubDialogOpen}
-        onUserUpdated={() => {
-            // This is a simple way to trigger a re-fetch in useCollection
-            // In a real app, you might optimistically update the UI or use a more robust state management solution
-            const currentUsers = [...(users || [])];
-            const userIndex = currentUsers.findIndex(u => u.id === editingUser?.id);
-            if(userIndex > -1) {
-              // This part doesn't really work as expected without a proper state update mechanism,
-              // but for this context it's a placeholder for re-fetching.
-            }
-        }}
+        onUserUpdated={() => { }}
       />
     </div>
   );

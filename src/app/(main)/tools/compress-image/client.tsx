@@ -312,6 +312,8 @@ export default function CompressImageClient() {
                 sessionStorage.removeItem('compress-image-size');
                 sessionStorage.removeItem('compress-image-type');
 
+                sessionStorage.setItem('return-url', window.location.pathname);
+
                 const filename = file.file.name.replace(/(\.[^/.]+)/i, `_compressed.${outputFormat}`);
 
                 await sessionStorage.setItem('compress-image-file', file.compressedDataUrl);
@@ -339,6 +341,8 @@ export default function CompressImageClient() {
                 sessionStorage.removeItem('compress-image-filename');
                 sessionStorage.removeItem('compress-image-size');
                 sessionStorage.removeItem('compress-image-type');
+
+                sessionStorage.setItem('return-url', window.location.pathname);
 
                 await sessionStorage.setItem('compress-image-file', dataUrl);
                 await sessionStorage.setItem('compress-image-filename', 'dorex-ai-compressed.zip');

@@ -3,23 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Loader2, Upload, FileType, X, Download, Crop as CropIcon, RotateCcw } from 'lucide-react';
+import { Loader2, Upload, FileType, X, Download, Crop as CropIcon, RotateCcw, Shield, Layers, Zap, MousePointerClick } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { RelatedTools } from '@/components/related-tools';
-import { tools } from '@/lib/tools';
+import { ToolPageLayout } from '@/components/tools/ToolPageLayout';
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
-import { PDFDocument, rgb } from 'pdf-lib';
-
-// Import PDF.js
+import { PDFDocument } from 'pdf-lib';
 import * as pdfjsLib from 'pdfjs-dist';
 
 // Set worker source
@@ -254,207 +243,185 @@ export default function CropPdfClient() {
         }
     };
 
+    const features = [
+        { title: 'Visual Cropping Interface', description: 'Easily select the area you want to keep using an intuitive drag-and-drop crop tool.', icon: MousePointerClick },
+        { title: 'Batch Page Processing', description: 'Apply the same crop area to all pages in your document with a single click.', icon: Layers },
+        { title: 'Secure Processing', description: 'All processing happens locally in your browser. Your files are never uploaded to our servers.', icon: Shield },
+        { title: 'High-Quality Output', description: 'Maintains the original quality of your PDF content while trimming the margins.', icon: Zap },
+    ];
+
+    const steps = [
+        { title: 'Upload PDF', description: 'Click to upload or drag and drop the PDF file you want to crop.' },
+        { title: 'Select Area', description: 'Draw a box on the page preview to define the precise area you want to keep.' },
+        { title: 'Apply Crop', description: 'Choose "Crop Page" for the current page only or "Crop All" to apply to the whole document.' },
+        { title: 'Download', description: 'Review the result in the preview and click "Download PDF" to save your cropped file.' },
+    ];
+
+    const faqs = [
+        { question: 'Is this tool free?', answer: 'Yes, our PDF cropping tool is 100% free to use with no limits on file size or usage.' },
+        { question: 'Are my files secure?', answer: 'Absolutely. We perform all processing client-side within your browser, so your sensitive documents never leave your device.' },
+        { question: 'Can I crop different pages differently?', answer: 'Currently, you can crop individual pages one by one or apply one crop to all pages. Complex multi-page variable cropping requires processing each page individually.' },
+    ];
+
+    const relatedTools = ['/tools/pdf-to-powerpoint', '/tools/split-pdf', '/tools/compress-pdf'];
+
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-            {/* Breadcrumb */}
-            <div className="mb-8">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/tools">Tools</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>Crop PDF</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-            </div>
-
-            <div className="text-center mb-12 space-y-4">
-                <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">
-                    Crop PDF Tool
-                </h1>
-                <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                    Trim margins and crop pages in your PDF documents.
-                </p>
-            </div>
-
-            {/* Upload Section */}
-            {!file && (
-                <Card
-                    className="p-12 border-2 border-dashed border-muted-foreground/25 hover:border-blue-500 hover:bg-blue-50/50 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-4 bg-muted/5"
-                    onClick={() => fileInputRef.current?.click()}
-                >
-                    <div className="p-4 rounded-full bg-primary/10 text-primary">
-                        <Upload className="h-10 w-10" />
-                    </div>
-                    <div className="text-center">
-                        <h3 className="text-xl font-semibold">Click to Upload PDF</h3>
-                        <p className="text-muted-foreground mt-1">or drag and drop your file here</p>
-                    </div>
-                    <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        accept=".pdf"
-                        className="hidden"
-                    />
-                </Card>
-            )}
-
-            {/* Editor Section */}
-            {file && (
-                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    {/* Toolbar */}
-                    <Card className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-4 z-10 shadow-lg border-primary/20">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
-                                <FileType className="h-6 w-6" />
-                            </div>
-                            <div>
-                                <p className="font-medium truncate max-w-[200px] md:max-w-xs">{file.name}</p>
-                                <p className="text-xs text-muted-foreground">{numPages} Pages • Page {currentPage}</p>
-                            </div>
+        <ToolPageLayout
+            title="Crop PDF Tool"
+            description="Trim margins and crop pages in your PDF documents. Secure, fast, and free online tool."
+            toolName="Crop PDF"
+            category="PDF"
+            features={features}
+            steps={steps}
+            faqs={faqs}
+            relatedTools={relatedTools}
+            aboutTitle="About Crop PDF Tool"
+            aboutDescription={
+                <>
+                    Our Crop PDF tool allows you to easily trim margins and remove unwanted areas from your PDF pages.
+                    Whether you need to focus on specific content, remove header/footer information, or adjust the page size for printing,
+                    this tool provides a visual interface to crop your documents with precision. You can crop individual pages or apply the same crop to the entire document.
+                </>
+            }
+        >
+            <div className="container mx-auto max-w-6xl">
+                {/* Upload Section */}
+                {!file && (
+                    <Card
+                        className="p-12 border-2 border-dashed border-muted-foreground/25 hover:border-blue-500 hover:bg-blue-50/50 hover:shadow-lg transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-4 bg-muted/5"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
+                        <div className="p-4 rounded-full bg-primary/10 text-primary">
+                            <Upload className="h-10 w-10" />
                         </div>
-
-                        <div className="flex items-center gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage <= 1}
-                            >
-                                Previous
-                            </Button>
-                            <span className="text-sm font-medium w-16 text-center">
-                                {currentPage} / {numPages}
-                            </span>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage >= numPages}
-                            >
-                                Next
-                            </Button>
+                        <div className="text-center">
+                            <h3 className="text-xl font-semibold">Click to Upload PDF</h3>
+                            <p className="text-muted-foreground mt-1">or drag and drop your file here</p>
                         </div>
-
-                        <div className="flex items-center gap-3 w-full md:w-auto">
-                            <Button variant="outline" onClick={clearFile} disabled={processing}>
-                                <X className="mr-2 h-4 w-4" />
-                                Cancel
-                            </Button>
-
-                            {isCropped ? (
-                                <>
-                                    <Button variant="outline" onClick={handleReset} disabled={processing}>
-                                        <RotateCcw className="mr-2 h-4 w-4" />
-                                        Reset
-                                    </Button>
-                                    <Button
-                                        onClick={handleDownload}
-                                        className="bg-green-600 hover:bg-green-700"
-                                    >
-                                        <Download className="mr-2 h-4 w-4" />
-                                        Download PDF
-                                    </Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Button
-                                        onClick={() => applyCrop(false)}
-                                        disabled={!completedCrop || processing}
-                                        className="bg-blue-600 hover:bg-blue-700"
-                                    >
-                                        {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CropIcon className="mr-2 h-4 w-4" />}
-                                        Crop Page
-                                    </Button>
-                                    <Button
-                                        onClick={() => applyCrop(true)}
-                                        disabled={!completedCrop || processing}
-                                        variant="secondary"
-                                    >
-                                        {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CropIcon className="mr-2 h-4 w-4" />}
-                                        Crop All
-                                    </Button>
-                                </>
-                            )}
-                        </div>
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            accept=".pdf"
+                            className="hidden"
+                        />
                     </Card>
+                )}
 
-                    {/* Crop Area */}
-                    <div className="flex justify-center bg-muted/20 p-8 rounded-xl border min-h-[500px]">
-                        {loading ? (
-                            <div className="flex flex-col items-center justify-center">
-                                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                                <p className="text-lg font-medium">Loading PDF...</p>
+                {/* Editor Section */}
+                {file && (
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {/* Toolbar */}
+                        <Card className="p-4 flex flex-col md:flex-row items-center justify-between gap-4 sticky top-24 z-10 shadow-lg border-primary/20 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-blue-100 text-blue-600 rounded-lg">
+                                    <FileType className="h-6 w-6" />
+                                </div>
+                                <div>
+                                    <p className="font-medium truncate max-w-[200px] md:max-w-xs">{file.name}</p>
+                                    <p className="text-xs text-muted-foreground">{numPages} Pages • Page {currentPage}</p>
+                                </div>
                             </div>
-                        ) : pageImage ? (
-                            isCropped ? (
-                                <img
-                                    src={pageImage}
-                                    alt="Cropped PDF Page"
-                                    className="max-w-full max-h-[80vh] object-contain shadow-2xl"
-                                />
-                            ) : (
-                                <ReactCrop
-                                    crop={crop}
-                                    onChange={(_, percentCrop) => setCrop(percentCrop)}
-                                    onComplete={(c) => setCompletedCrop(c)}
-                                    className="shadow-2xl"
+
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                    disabled={currentPage <= 1}
                                 >
+                                    Previous
+                                </Button>
+                                <span className="text-sm font-medium w-16 text-center">
+                                    {currentPage} / {numPages}
+                                </span>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                    disabled={currentPage >= numPages}
+                                >
+                                    Next
+                                </Button>
+                            </div>
+
+                            <div className="flex items-center gap-3 w-full md:w-auto">
+                                <Button variant="outline" onClick={clearFile} disabled={processing}>
+                                    <X className="mr-2 h-4 w-4" />
+                                    Cancel
+                                </Button>
+
+                                {isCropped ? (
+                                    <>
+                                        <Button variant="outline" onClick={handleReset} disabled={processing}>
+                                            <RotateCcw className="mr-2 h-4 w-4" />
+                                            Reset
+                                        </Button>
+                                        <Button
+                                            onClick={handleDownload}
+                                            className="bg-green-600 hover:bg-green-700"
+                                        >
+                                            <Download className="mr-2 h-4 w-4" />
+                                            Download PDF
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            onClick={() => applyCrop(false)}
+                                            disabled={!completedCrop || processing}
+                                            className="bg-blue-600 hover:bg-blue-700"
+                                        >
+                                            {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CropIcon className="mr-2 h-4 w-4" />}
+                                            Crop Page
+                                        </Button>
+                                        <Button
+                                            onClick={() => applyCrop(true)}
+                                            disabled={!completedCrop || processing}
+                                            variant="secondary"
+                                        >
+                                            {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CropIcon className="mr-2 h-4 w-4" />}
+                                            Crop All
+                                        </Button>
+                                    </>
+                                )}
+                            </div>
+                        </Card>
+
+                        {/* Crop Area */}
+                        <div className="flex justify-center bg-muted/20 p-8 rounded-xl border min-h-[500px]">
+                            {loading ? (
+                                <div className="flex flex-col items-center justify-center">
+                                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                                    <p className="text-lg font-medium">Loading PDF...</p>
+                                </div>
+                            ) : pageImage ? (
+                                isCropped ? (
                                     <img
-                                        ref={imageRef}
                                         src={pageImage}
-                                        alt="PDF Page"
-                                        className="max-w-full max-h-[80vh] object-contain"
+                                        alt="Cropped PDF Page"
+                                        className="max-w-full max-h-[80vh] object-contain shadow-2xl"
                                     />
-                                </ReactCrop>
-                            )
-                        ) : null}
+                                ) : (
+                                    <ReactCrop
+                                        crop={crop}
+                                        onChange={(_, percentCrop) => setCrop(percentCrop)}
+                                        onComplete={(c) => setCompletedCrop(c)}
+                                        className="shadow-2xl"
+                                    >
+                                        <img
+                                            ref={imageRef}
+                                            src={pageImage}
+                                            alt="PDF Page"
+                                            className="max-w-full max-h-[80vh] object-contain"
+                                        />
+                                    </ReactCrop>
+                                )
+                            ) : null}
+                        </div>
                     </div>
-                </div>
-            )}
-
-            {/* Content Section */}
-            <div className="max-w-4xl mx-auto space-y-12 mb-16">
-                <section className="space-y-4">
-                    <h2 className="text-3xl font-bold">About Crop PDF Tool</h2>
-                    <p className="text-muted-foreground text-lg leading-relaxed">
-                        Our Crop PDF tool allows you to easily trim margins and remove unwanted areas from your PDF pages.
-                        Whether you need to focus on specific content, remove header/footer information, or adjust the page size for printing,
-                        this tool provides a visual interface to crop your documents with precision. You can crop individual pages or apply the same crop to the entire document.
-                    </p>
-                </section>
-
-                <section className="space-y-4">
-                    <h2 className="text-3xl font-bold">How to Use</h2>
-                    <div className="grid gap-6 md:grid-cols-3">
-                        <Card className="p-6">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl mb-4">1</div>
-                            <h3 className="font-semibold text-xl mb-2">Upload PDF</h3>
-                            <p className="text-muted-foreground">Upload the PDF file you want to crop.</p>
-                        </Card>
-                        <Card className="p-6">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl mb-4">2</div>
-                            <h3 className="font-semibold text-xl mb-2">Select Area</h3>
-                            <p className="text-muted-foreground">Draw a box on the preview to define the area you want to keep.</p>
-                        </Card>
-                        <Card className="p-6">
-                            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl mb-4">3</div>
-                            <h3 className="font-semibold text-xl mb-2">Crop & Download</h3>
-                            <p className="text-muted-foreground">Click "Crop Page" or "Crop All" to apply, then download your new PDF.</p>
-                        </Card>
-                    </div>
-                </section>
+                )}
             </div>
-
-            <RelatedTools tools={tools.filter(t => ['PDF to PowerPoint', 'Split PDF', 'Compress PDF'].includes(t.name))} />
-        </div>
+        </ToolPageLayout>
     );
 }

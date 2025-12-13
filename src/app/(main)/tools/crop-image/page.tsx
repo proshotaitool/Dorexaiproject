@@ -463,6 +463,7 @@ export default function CropImagePage() {
     if (filesToDownload.length === 1 && filesToDownload[0].croppedDataUrl) {
       sessionStorage.setItem('crop-image-file', filesToDownload[0].croppedDataUrl);
       sessionStorage.setItem('crop-image-filename', filesToDownload[0].file.name.replace(/(\\.[^/.]+)/i, `_cropped.${outputFormat}`));
+      sessionStorage.setItem('return-url', window.location.pathname);
       router.push('/download/crop-image');
     } else {
       const zip = new JSZip();
@@ -475,6 +476,7 @@ export default function CropImagePage() {
       const dataUrl = await blobToDataURL(zipBlob);
       sessionStorage.setItem('crop-image-file', dataUrl);
       sessionStorage.setItem('crop-image-filename', 'dorex-ai-cropped-images.zip');
+      sessionStorage.setItem('return-url', window.location.pathname);
       router.push('/download/crop-image');
     }
   };
@@ -690,6 +692,7 @@ export default function CropImagePage() {
                               if (f.croppedDataUrl) {
                                 sessionStorage.setItem('crop-image-file', f.croppedDataUrl);
                                 sessionStorage.setItem('crop-image-filename', f.file.name.replace(/(\\.[^/.]+)/i, `_cropped.${outputFormat}`));
+                                sessionStorage.setItem('return-url', window.location.pathname);
                                 router.push('/download/crop-image');
                               }
                             }}

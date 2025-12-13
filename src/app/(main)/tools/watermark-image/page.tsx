@@ -89,7 +89,7 @@ export default function WatermarkImagePage() {
   const { data: userProfile } = useDoc(userDocRef!);
 
   const toolPath = '/tools/watermark-image';
-  const isFavorite = userProfile?.favoriteTools?.includes(toolPath);
+  const isFavorite = (userProfile as any)?.favoriteTools?.includes(toolPath);
 
 
   const activeImage = useMemo(() => files.find(f => f.id === activeImageId) || null, [files, activeImageId]);
@@ -329,6 +329,7 @@ export default function WatermarkImagePage() {
     if (filesToDownload.length === 1 && filesToDownload[0].watermarkedDataUrl) {
       await sessionStorage.setItem('watermark-image-file', filesToDownload[0].watermarkedDataUrl);
       await sessionStorage.setItem('watermark-image-filename', filesToDownload[0].file.name.replace(/(\\.[^/.]+)/i, `_watermarked.jpg`));
+      sessionStorage.setItem('return-url', window.location.pathname);
       router.push('/download/watermark-image');
     } else {
       const zip = new JSZip();
@@ -341,6 +342,7 @@ export default function WatermarkImagePage() {
       const dataUrl = await blobToDataURL(zipBlob);
       await sessionStorage.setItem('watermark-image-file', dataUrl);
       await sessionStorage.setItem('watermark-image-filename', `dorex-ai-watermarked-images.zip`);
+      sessionStorage.setItem('return-url', window.location.pathname);
       router.push('/download/watermark-image');
     }
   };
@@ -583,6 +585,7 @@ export default function WatermarkImagePage() {
                               if (f.watermarkedDataUrl) {
                                 sessionStorage.setItem('watermark-image-file', f.watermarkedDataUrl);
                                 sessionStorage.setItem('watermark-image-filename', f.file.name.replace(/(\\.[^/.]+)/i, `_watermarked.jpg`));
+                                sessionStorage.setItem('return-url', window.location.pathname);
                                 router.push('/download/watermark-image');
                               }
                             }}

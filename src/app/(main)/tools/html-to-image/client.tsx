@@ -5,24 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { FileCode, Download, Loader2, Image as ImageIcon, Globe, Upload, File as FileIcon, Monitor, Tablet, Smartphone, RefreshCw, Bookmark, Share2, CheckCircle } from 'lucide-react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator, BreadcrumbPage } from '@/components/ui/breadcrumb';
+import { FileCode, Download, Loader2, Image as ImageIcon, Globe, Upload, Monitor, Tablet, Smartphone, Share2, Bookmark, CheckCircle } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import html2canvas from 'html2canvas';
 import { cn, formatBytes } from '@/lib/utils';
-import { RelatedTools } from '@/components/related-tools';
 import { tools } from '@/lib/tools';
 import { useUser, useFirestore, useDoc } from '@/firebase';
 import { doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-
-
 import { captureUrl } from '@/app/actions/capture-url';
+import { ToolPageLayout } from '@/components/tools/ToolPageLayout';
 
 type OutputFormat = 'png' | 'jpeg' | 'webp';
 type InputMode = 'code' | 'file' | 'url';
@@ -54,7 +50,7 @@ export default function HtmlToImageClient() {
         if (!user || !firestore) return null;
         return doc(firestore, 'users', user.uid);
     }, [user, firestore]);
-    const { data: userProfile } = useDoc(userDocRef as any);
+    const { data: userProfile } = useDoc(userDocRef as any) as any;
 
     const toolPath = '/tools/html-to-image';
     const isFavorite = userProfile?.favoriteTools?.includes(toolPath);
@@ -187,35 +183,49 @@ export default function HtmlToImageClient() {
 
     const isReadyToCapture = htmlContent.trim() !== '';
 
-    const relatedTools = tools.filter(tool => ['/tools/compress-image', '/tools/resize-image'].includes(tool.path));
+    const relatedTools = ['/tools/compress-image', '/tools/resize-image'];
+
+    const features = [
+        { title: 'Accurate Rendering', description: 'Captures HTML, CSS, and JavaScript just as they would appear in a browser.' },
+        { title: 'Responsive Viewports', description: 'Preview and capture your content in desktop, tablet, or mobile sizes.' },
+        { title: 'Multiple Formats', description: 'Choose between PNG, JPEG, and WEBP for your output image.' },
+        { title: 'Animation Support', description: 'Use the delay feature to capture content after animations have finished.' },
+        { title: 'Secure & Private', description: 'All rendering is done in-browser. Your code is never sent to our servers.' },
+    ];
+
+    const steps = [
+        { title: 'Choose Input Method', description: 'Select whether to paste HTML code directly, upload an HTML file, or enter a URL.' },
+        { title: 'Configure Capture Settings', description: 'Select the desired viewport size (Desktop, Tablet, or Mobile), the output image format (PNG, JPEG, WEBP), and adjust the quality.' },
+        { title: 'Set a Capture Delay (Optional)', description: 'If your HTML contains animations or scripts that need time to run, set a delay (in seconds) to ensure all content is loaded before the screenshot is taken.' },
+        { title: 'Capture Image', description: 'Click the "Capture Image" button to start the conversion process.' },
+        { title: 'Download Your Image', description: 'Once the capture is complete, a preview will appear. Click "Download Image" to save your file.' },
+    ];
+
+    const faqs = [
+        { question: 'Why can\'t I capture an image from a URL?', answer: 'For security reasons (CORS policies), browsers prevent websites from directly capturing content from other domains. This tool focuses on rendering HTML code that you provide, which is a more reliable and secure method.' },
+        { question: 'Why does my captured image look slightly different from my browser?', answer: 'Rendering can vary slightly based on the fonts installed on a system and subtle differences in browser rendering engines. Our tool uses a standardized environment to produce consistent results.' },
+        { question: 'Can I capture content that requires login?', answer: 'Since the rendering happens in a sandboxed environment, it cannot access your logged-in sessions. To capture authenticated content, you would need to save the page\'s HTML source code after logging in and then upload it using the "File" input option.' },
+    ];
 
     return (
-        <div className="container py-12">
-            <div className="text-center mb-12">
-                <Breadcrumb className="flex justify-center mb-4">
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/tools">Tools</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/tools/image">Image Tools</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>HTML to Image</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">Free HTML to Image Converter</h1>
-                <p className="mt-2 text-muted-foreground md:text-lg max-w-2xl mx-auto">
-                    Capture a high-quality screenshot of any HTML snippet. Convert your own code into PNG, JPG, or WEBP images.
-                </p>
-            </div>
+        <ToolPageLayout
+            title="Free HTML to Image Converter"
+            description="Capture a high-quality screenshot of any HTML snippet. Convert your own code into PNG, JPG, or WEBP images."
+            toolName="HTML to Image"
+            category="Image"
+            features={features}
+            steps={steps}
+            faqs={faqs}
+            relatedTools={relatedTools}
+            aboutTitle="About the HTML to Image Tool"
+            aboutDescription={
+                <>
+                    Our HTML to Image converter is a powerful utility for developers, designers, and marketers who need to capture a visual representation of web content. This tool takes raw HTML code or an HTML file and renders it in a virtual browser, then takes a high-quality screenshot. It's perfect for creating email thumbnails, generating social media preview images for your web pages, or documenting visual changes during development.
+                    <br /><br />
+                    By rendering the content in a sandboxed environment, we can accurately capture complex layouts, CSS styles, and even JavaScript-driven elements. You have full control over the viewport size, output format, and quality, ensuring the final image meets your exact requirements.
+                </>
+            }
+        >
             <div className="flex justify-end gap-2 mb-4">
                 {user && (
                     <Button onClick={handleFavorite} variant="outline" className={cn("rounded-full transition-colors", isFavorite ? "border-yellow-400 text-yellow-600 bg-yellow-100/50 hover:bg-yellow-100/80 hover:text-yellow-700" : "hover:bg-muted/50")}>
@@ -358,64 +368,6 @@ export default function HtmlToImageClient() {
                     </CardContent>
                 </Card>
             </div>
-
-            <section className="mt-16 space-y-8">
-                <Card>
-                    <CardContent className="p-6 md:p-8">
-                        <h2 className="text-2xl font-semibold mb-4">About the HTML to Image Tool</h2>
-                        <p className="text-muted-foreground leading-relaxed">
-                            Our HTML to Image converter is a powerful utility for developers, designers, and marketers who need to capture a visual representation of web content. This tool takes raw HTML code or an HTML file and renders it in a virtual browser, then takes a high-quality screenshot. It's perfect for creating email thumbnails, generating social media preview images for your web pages, or documenting visual changes during development.
-                            <br /><br />
-                            By rendering the content in a sandboxed environment, we can accurately capture complex layouts, CSS styles, and even JavaScript-driven elements. You have full control over the viewport size, output format, and quality, ensuring the final image meets your exact requirements.
-                        </p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-6 md:p-8">
-                        <h2 className="text-2xl font-semibold mb-4">How to Convert HTML to an Image</h2>
-                        <ol className="list-decimal list-inside space-y-4 text-muted-foreground">
-                            <li><span className="font-semibold text-foreground">Choose Input Method:</span> Select whether to paste HTML code directly or upload an HTML file.</li>
-                            <li><span className="font-semibold text-foreground">Configure Capture Settings:</span> Select the desired viewport size (Desktop, Tablet, or Mobile), the output image format (PNG, JPEG, WEBP), and adjust the quality.</li>
-                            <li><span className="font-semibold text-foreground">Set a Capture Delay (Optional):</span> If your HTML contains animations or scripts that need time to run, set a delay (in seconds) to ensure all content is loaded before the screenshot is taken.</li>
-                            <li><span className="font-semibold text-foreground">Capture Image:</span> Click the "Capture Image" button to start the conversion process.</li>
-                            <li><span className="font-semibold text-foreground">Download Your Image:</span> Once the capture is complete, a preview will appear. Click "Download Image" to save your file.</li>
-                        </ol>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-6 md:p-8">
-                        <h2 className="text-2xl font-semibold mb-4">Features & Benefits</h2>
-                        <ul className="space-y-4 text-muted-foreground">
-                            <li className="flex items-start"><CheckCircle className="h-5 w-5 text-primary mr-3 mt-1 flex-shrink-0" /><div><span className="font-semibold text-foreground">Accurate Rendering:</span> Captures HTML, CSS, and JavaScript just as they would appear in a browser.</div></li>
-                            <li className="flex items-start"><CheckCircle className="h-5 w-5 text-primary mr-3 mt-1 flex-shrink-0" /><div><span className="font-semibold text-foreground">Responsive Viewports:</span> Preview and capture your content in desktop, tablet, or mobile sizes.</div></li>
-                            <li className="flex items-start"><CheckCircle className="h-5 w-5 text-primary mr-3 mt-1 flex-shrink-0" /><div><span className="font-semibold text-foreground">Multiple Formats:</span> Choose between PNG, JPEG, and WEBP for your output image.</div></li>
-                            <li className="flex items-start"><CheckCircle className="h-5 w-5 text-primary mr-3 mt-1 flex-shrink-0" /><div><span className="font-semibold text-foreground">Animation Support:</span> Use the delay feature to capture content after animations have finished.</div></li>
-                            <li className="flex items-start"><CheckCircle className="h-5 w-5 text-primary mr-3 mt-1 flex-shrink-0" /><div><span className="font-semibold text-foreground">Secure & Private:</span> All rendering is done in-browser. Your code is never sent to our servers.</div></li>
-                        </ul>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardContent className="p-6 md:p-8">
-                        <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions (FAQ)</h2>
-                        <Accordion type="single" collapsible className="w-full">
-                            <AccordionItem value="item-1">
-                                <AccordionTrigger>Why can't I capture an image from a URL?</AccordionTrigger>
-                                <AccordionContent>For security reasons (CORS policies), browsers prevent websites from directly capturing content from other domains. This tool focuses on rendering HTML code that you provide, which is a more reliable and secure method.</AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                                <AccordionTrigger>Why does my captured image look slightly different from my browser?</AccordionTrigger>
-                                <AccordionContent>Rendering can vary slightly based on the fonts installed on a system and subtle differences in browser rendering engines. Our tool uses a standardized environment to produce consistent results.</AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-3">
-                                <AccordionTrigger>Can I capture content that requires login?</AccordionTrigger>
-                                <AccordionContent>Since the rendering happens in a sandboxed environment, it cannot access your logged-in sessions. To capture authenticated content, you would need to save the page's HTML source code after logging in and then upload it using the "File" input option.</AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
-                    </CardContent>
-                </Card>
-            </section>
-
-            <RelatedTools tools={relatedTools} />
-        </div>
+        </ToolPageLayout>
     );
 }

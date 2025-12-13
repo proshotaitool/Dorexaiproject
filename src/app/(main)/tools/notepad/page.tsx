@@ -83,18 +83,21 @@ export default function NotepadPage() {
 
     const handleDownload = () => {
         const blob = new Blob([text], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'notepad-content.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast({
-            title: 'Downloaded',
-            description: 'Your note has been downloaded as a text file.',
-        });
+
+        // Convert Blob to Base64 (Data URL)
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64data = reader.result as string;
+
+            // Store details in sessionStorage
+            sessionStorage.setItem('return-url', window.location.pathname);
+            sessionStorage.setItem('download-url', base64data);
+            sessionStorage.setItem('download-filename', 'notepad-content.txt');
+
+            // Redirect to download page
+            window.location.href = '/download';
+        };
+        reader.readAsDataURL(blob);
     };
 
     const handleClear = () => {

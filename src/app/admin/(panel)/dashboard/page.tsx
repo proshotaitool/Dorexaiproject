@@ -20,6 +20,7 @@ const quickActions = [
   { label: 'Manage Users', icon: Users, href: '/admin/users' },
   { label: 'Manage Tools', icon: Wrench, href: '/admin/tools' },
   { label: 'Manage Blog', icon: FileText, href: '/admin/blog' },
+  { label: 'Messages', icon: Activity, href: '/admin/messages' },
 ];
 
 import { useToolManager } from '@/hooks/useToolManager';
@@ -34,16 +35,20 @@ export default function AdminDashboardPage() {
   const blogCollection = firestore ? collection(firestore, 'blog-posts') : null;
   const { data: blogPosts, isLoading: blogLoading } = useCollection(blogCollection as any);
 
+  const messagesCollection = firestore ? collection(firestore, 'contact-messages') : null;
+  const { data: messages, isLoading: messagesLoading } = useCollection(messagesCollection as any);
+
   const proUsers = users?.filter(u => u.plan === 'Pro' || u.plan === 'Business').length || 0;
 
   const totalTools = managedTools.length;
   const totalBlogPosts = blogPosts?.length || 0;
+  const totalMessages = messages?.length || 0;
 
   const stats = [
     { title: 'Total Users', value: usersLoading ? '...' : users?.length || 0, icon: Users, color: 'text-blue-500' },
     { title: 'Active Subscriptions', value: usersLoading ? '...' : proUsers, icon: CreditCard, color: 'text-green-500' },
     { title: 'Total Tools', value: toolsLoading ? '...' : totalTools, icon: Wrench, color: 'text-purple-500' },
-    { title: 'Blog Posts', value: blogLoading ? '...' : totalBlogPosts, icon: FileText, color: 'text-orange-500' },
+    { title: 'Messages', value: messagesLoading ? '...' : totalMessages, icon: FileText, color: 'text-pink-500' },
   ];
 
 

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Download, CheckCircle, Hourglass, ArrowLeft, Loader2, FileText } from 'lucide-react';
 import { formatBytes } from '@/lib/utils';
+import { AdsterraAds } from '@/components/ads/AdsterraAds';
 
 export default function DownloadPage() {
   const router = useRouter();
@@ -146,10 +147,13 @@ export default function DownloadPage() {
       <div className="grid grid-cols-12 gap-4 md:gap-8 h-full min-h-[90vh]">
 
         <aside className="hidden lg:flex col-span-2 items-center justify-center">
-
+          <AdsterraAds type="banner_160x600" />
         </aside>
 
         <main className="col-span-12 lg:col-span-8 flex flex-col items-center justify-center space-y-4 md:space-y-8">
+          <div className="w-full max-w-4xl flex justify-center">
+            <AdsterraAds type="banner_468x60" />
+          </div>
 
           <Card className="w-full max-w-lg text-center shadow-2xl animate-fade-in-up">
             <CardHeader>
@@ -211,7 +215,10 @@ export default function DownloadPage() {
                   </div>
 
                   {downloadStarted ? (
-                    <Button onClick={() => router.push('/tools')} className="w-full">
+                    <Button onClick={() => {
+                      const returnUrl = sessionStorage.getItem('return-url');
+                      router.push(returnUrl || '/tools');
+                    }} className="w-full">
                       <ArrowLeft className="mr-2 h-4 w-4" />
                       Back to Tools
                     </Button>
@@ -235,7 +242,7 @@ export default function DownloadPage() {
         </main>
 
         <aside className="hidden lg:flex col-span-2 items-center justify-center">
-
+          {/* Right sidebar ad can go here if needed */}
         </aside>
       </div>
     </div>

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -24,8 +24,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useToast } from '@/hooks/use-toast';
-import { useAuth, useUser, useCollection, useFirestore } from '@/firebase';
-import { collection, query, orderBy, where, getDocs, writeBatch, doc } from 'firebase/firestore';
+import { useAuth, useUser, useCollection, useFirestore, useDoc } from '@/firebase';
+import { collection, query, orderBy, where, getDocs, writeBatch, doc, setDoc } from 'firebase/firestore';
 import { logAction } from '@/lib/logger';
 
 interface AuditLog {
@@ -36,6 +36,16 @@ interface AuditLog {
   timestamp: any;
 }
 
+interface GlobalSettings {
+  siteName: string;
+  description: string;
+  logoUrl?: string; // Stored as base64 for now or URL
+  faviconUrl?: string;
+  language: string;
+  homepageMessage: string;
+  maintenanceMode: boolean;
+  maintenanceMessage: string;
+}
 
 export default function SettingsPage() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -48,8 +58,33 @@ export default function SettingsPage() {
   const [userEmailToUpdate, setUserEmailToUpdate] = useState('');
   const [isGranting, setIsGranting] = useState(false);
 
+  // Settings State
+  const [siteName, setSiteName] = useState('DoreX Ai');
+  const [description, setDescription] = useState('Smart tools for all your PDF, image & document needs.');
+  const [language, setLanguage] = useState('en');
+  const [homepageMessage, setHomepageMessage] = useState('');
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceMessage, setMaintenanceMessage] = useState('We’re performing scheduled maintenance. We’ll be back online shortly!');
+
+  // Fetch Global Settings
+  const settingsDocRef = useMemo(() => firestore ? doc(firestore, 'global-settings', 'general') : null, [firestore]);
+  const { data: globalSettings, isLoading: settingsLoading } = useDoc(settingsDocRef);
+
+  useEffect(() => {
+    if (globalSettings) {
+      setSiteName(globalSettings.siteName || 'DoreX Ai');
+      setDescription(globalSettings.description || '');
+      setLanguage(globalSettings.language || 'en');
+      setHomepageMessage(globalSettings.homepageMessage || '');
+      setMaintenanceMode(globalSettings.maintenanceMode || false);
+      setMaintenanceMessage(globalSettings.maintenanceMessage || 'We’re performing scheduled maintenance.');
+      if (globalSettings.logoUrl) setLogoPreview(globalSettings.logoUrl);
+      if (globalSettings.faviconUrl) setFaviconPreview(globalSettings.faviconUrl);
+    }
+  }, [globalSettings]);
+
   const isAdmin = (profile as any)?.role === 'admin';
-  const logsCollection = (firestore && isAdmin) ? query(collection(firestore, 'audit-logs'), orderBy('timestamp', 'desc')) : null;
+  const logsCollection = useMemo(() => (firestore && isAdmin) ? query(collection(firestore, 'audit-logs'), orderBy('timestamp', 'desc')) : null, [firestore, isAdmin]);
   const { data: logs, isLoading: logsLoading } = useCollection<AuditLog>(logsCollection as any);
 
 
@@ -101,30 +136,57 @@ export default function SettingsPage() {
   };
 
 
-  const handleSaveSettings = () => {
+  const handleSaveSettings = async () => {
+    if (!firestore || !settingsDocRef) return;
     setIsSaving(true);
-    // Placeholder for saving logic
-    setTimeout(() => {
+    try {
+      const data: GlobalSettings = {
+        siteName,
+        description,
+        language,
+        homepageMessage,
+        maintenanceMode,
+        maintenanceMessage,
+        logoUrl: logoPreview || undefined,
+        faviconUrl: faviconPreview || undefined
+      };
+      await setDoc(settingsDocRef, data, { merge: true });
+
+      // Log action
+      if (currentUser) {
+        await logAction(firestore, currentUser, "Updated Global Settings");
+      }
+
       toast({
-        title: "Settings Saved (Draft)",
-        description: "Your changes have been saved as a draft. Click 'Push Live Updates' to publish.",
+        title: "Settings Saved",
+        description: "Global settings have been updated in the database.",
       });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Error", description: "Failed to save settings.", variant: "destructive" });
+    } finally {
       setIsSaving(false);
-    }, 1500);
+    }
   }
 
-  const handlePushLive = () => {
-    toast({
-      title: "Pushed to Live!",
-      description: "All pending changes have been published."
-    });
+  // This button is now essentially a "Manual Save" alias, or triggers a deploy hook in Vercel in real-world
+  // For now, we'll make it commit any pending memory changes if we had them, OR just re-confirm
+  const handlePushLive = async () => {
+    // In this architecture, setDoc writes directly to DB, so "Save Settings" IS "Push Live" for content.
+    // But we can keep this for "Deployment Triggers" if needed.
+    // For now, let's just re-save to ensure consistency.
+    await handleSaveSettings();
+    toast({ title: "Live Sync", description: "Configuration synced with database." });
   }
 
   const pendingChanges = [
-    { id: 1, description: 'Updated Site Name to "ProShot AI Suite"' },
-    { id: 2, description: 'Enabled "Allow user registration" in Security' },
-    { id: 3, description: 'Changed default user role to "Contributor"' },
+    { id: 1, description: 'Updated Site Name' },
+    { id: 2, description: (maintenanceMode ? 'Enabled' : 'Disabled') + ' Maintenance Mode' },
   ];
+
+  if (settingsLoading) {
+    return <div className="flex h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin" /></div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -138,7 +200,7 @@ export default function SettingsPage() {
             <AlertDialogTrigger asChild>
               <Button className="bg-green-600 hover:bg-green-700">
                 <CircleDot className="mr-2 h-4 w-4" />
-                Push Live Updates ({pendingChanges.length})
+                Push Live Updates
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -148,26 +210,25 @@ export default function SettingsPage() {
                   Confirm Live Update
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  You are about to push the following changes to your live website. This action cannot be undone.
+                  This will ensure your configuration matches the database.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <div className="my-4 rounded-lg border bg-muted/50 p-4 space-y-2 text-sm">
-                <h4 className="font-semibold">Pending Changes:</h4>
+                <h4 className="font-semibold">Current Configuration:</h4>
                 <ul className="list-disc pl-5 text-muted-foreground">
-                  {pendingChanges.map(change => (
-                    <li key={change.id}>{change.description}</li>
-                  ))}
+                  <li>Site Name: {siteName}</li>
+                  <li>Maintenance Mode: {maintenanceMode ? 'ON' : 'OFF'}</li>
                 </ul>
               </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handlePushLive}>Confirm & Push Live</AlertDialogAction>
+                <AlertDialogAction onClick={handlePushLive}>Confirm Sync</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
           <Button onClick={handleSaveSettings} disabled={isSaving}>
             {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-            Save Draft
+            Save Changes
           </Button>
         </div>
       </div>
@@ -190,11 +251,11 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="site-name">Site Name</Label>
-                  <Input id="site-name" defaultValue="ProShot AI" />
+                  <Input id="site-name" value={siteName} onChange={e => setSiteName(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="site-description">Site Description / Tagline</Label>
-                  <Input id="site-description" defaultValue="Smart tools for all your PDF, image & document needs." />
+                  <Input id="site-description" value={description} onChange={e => setDescription(e.target.value)} />
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,7 +281,7 @@ export default function SettingsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="language">Default Language</Label>
-                  <Select defaultValue="en">
+                  <Select value={language} onValueChange={setLanguage}>
                     <SelectTrigger id="language"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="en">English</SelectItem>
@@ -231,7 +292,7 @@ export default function SettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="homepage-message">Homepage Message / Notice</Label>
-                <Input id="homepage-message" placeholder="🎉 New AI tools launched!" />
+                <Input id="homepage-message" value={homepageMessage} onChange={e => setHomepageMessage(e.target.value)} placeholder="🎉 New AI tools launched!" />
               </div>
               <div className="space-y-4 rounded-lg border p-4">
                 <div className="flex items-center justify-between">
@@ -239,12 +300,14 @@ export default function SettingsPage() {
                     <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
                     <p className="text-xs text-muted-foreground">Temporarily disable public access to the site.</p>
                   </div>
-                  <Switch id="maintenance-mode" />
+                  <Switch id="maintenance-mode" checked={maintenanceMode} onCheckedChange={setMaintenanceMode} />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="maintenance-message">Maintenance Message</Label>
-                  <Textarea id="maintenance-message" placeholder="We’re performing scheduled maintenance. We’ll be back online shortly!" />
-                </div>
+                {maintenanceMode && (
+                  <div className="space-y-2">
+                    <Label htmlFor="maintenance-message">Maintenance Message</Label>
+                    <Textarea id="maintenance-message" value={maintenanceMessage} onChange={e => setMaintenanceMessage(e.target.value)} />
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -268,29 +331,7 @@ export default function SettingsPage() {
                 </Button>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Admin Account Security</CardTitle>
-                <CardDescription>Manage the primary admin account credentials and verification code.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="admin-email">Admin Email</Label>
-                  <Input id="admin-email" type="email" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="new-password">New Password</Label>
-                  <Input id="new-password" type="password" placeholder="Enter new password" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="verification-code">Admin Verification Code</Label>
-                  <Input id="verification-code" type="password" />
-                </div>
-                <div className="flex justify-end">
-                  <Button variant="destructive">Save Security Settings</Button>
-                </div>
-              </CardContent>
-            </Card>
+
           </div>
         </TabsContent>
 
@@ -301,26 +342,9 @@ export default function SettingsPage() {
               <CardDescription>Connect and manage external services.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base font-semibold">Google</CardTitle>
-                  <img src="https://www.google.com/favicon.ico" alt="Google" className="h-6 w-6" />
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Connect with Google services for authentication and analytics.</p>
-                  <Button variant="outline">Manage</Button>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base font-semibold">Payment Gateway</CardTitle>
-                  <CreditCard className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Integrate with Stripe or another gateway to handle payments.</p>
-                  <Button variant="outline">Connect</Button>
-                </CardContent>
-              </Card>
+              <div className="p-4 text-muted-foreground text-sm border border-dashed rounded-lg">
+                Integrations configuration is coming soon.
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -332,37 +356,9 @@ export default function SettingsPage() {
               <CardDescription>Store and manage API keys for external services.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base font-semibold">Firebase</CardTitle>
-                  <img src="https://www.firebase.com/favicon.ico" alt="Firebase" className="h-6 w-6" />
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Configuration for Firebase services.</p>
-                  <Button variant="outline">Manage</Button>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base font-semibold">OpenAI</CardTitle>
-                  <Bot className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">API key for AI-based features.</p>
-                  <Button variant="outline">Manage</Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-base font-semibold">Google Analytics</CardTitle>
-                  <BarChart className="h-6 w-6 text-primary" />
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <p className="text-sm text-muted-foreground">Analytics and tracking ID.</p>
-                  <Button variant="outline">Manage</Button>
-                </CardContent>
-              </Card>
+              <div className="p-4 text-muted-foreground text-sm border border-dashed rounded-lg">
+                API Key management is securely handled via server-side environment variables. GUI coming soon.
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

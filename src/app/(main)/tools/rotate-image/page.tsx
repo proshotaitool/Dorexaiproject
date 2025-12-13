@@ -69,7 +69,7 @@ export default function RotateImagePage() {
     const { data: userProfile } = useDoc(userDocRef as any);
 
     const toolPath = '/tools/rotate-image';
-    const isFavorite = userProfile?.favoriteTools?.includes(toolPath);
+    const isFavorite = (userProfile as any)?.favoriteTools?.includes(toolPath);
 
     const handleFavorite = async () => {
         if (!userDocRef) return;
@@ -269,6 +269,7 @@ export default function RotateImagePage() {
             if (file.transformedDataUrl) {
                 await sessionStorage.setItem('rotate-image-file', file.transformedDataUrl);
                 await sessionStorage.setItem('rotate-image-filename', file.file.name.replace(/(\\.[^/.]+)/i, `_rotated.${outputFormat}`));
+                sessionStorage.setItem('return-url', window.location.pathname);
                 router.push('/download/rotate-image');
             } else {
                 toast({ title: "Error", description: "Could not prepare file for download.", variant: "destructive" });
@@ -285,6 +286,7 @@ export default function RotateImagePage() {
                 const dataUrl = await blobToDataURL(zipBlob);
                 await sessionStorage.setItem('rotate-image-file', dataUrl);
                 await sessionStorage.setItem('rotate-image-filename', `dorex-ai-rotated-images.zip`);
+                sessionStorage.setItem('return-url', window.location.pathname);
                 router.push('/download/rotate-image');
             } catch (e) {
                 console.error(e);
@@ -501,6 +503,7 @@ export default function RotateImagePage() {
                                                             if (f.transformedDataUrl) {
                                                                 await sessionStorage.setItem('rotate-image-file', f.transformedDataUrl);
                                                                 await sessionStorage.setItem('rotate-image-filename', f.file.name.replace(/(\\.[^/.]+)/i, `_rotated.${outputFormat}`));
+                                                                sessionStorage.setItem('return-url', window.location.pathname);
                                                                 router.push('/download/rotate-image');
                                                             }
                                                         }}

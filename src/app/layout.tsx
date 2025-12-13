@@ -6,7 +6,7 @@ import { LanguageProvider } from '@/hooks/use-translation';
 import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import Script from 'next/script';
-import { FirebaseClientProvider } from '@/firebase';
+
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-body' });
 
@@ -53,9 +53,16 @@ export default function RootLayout({
       <head>
 
 
+      </head>
+      <body className={cn('font-body antialiased overflow-x-hidden', inter.variable)} suppressHydrationWarning>
+        <LanguageProvider>
+          {children}
+          <Toaster />
+        </LanguageProvider>
+
         {/* Google Analytics */}
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-85CS5XKZYS"></Script>
-        <Script id="google-analytics">
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-85CS5XKZYS" strategy="afterInteractive" />
+        <Script id="google-analytics" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
@@ -63,14 +70,6 @@ export default function RootLayout({
             gtag('config', 'G-85CS5XKZYS');
           `}
         </Script>
-      </head>
-      <body className={cn('font-body antialiased overflow-x-hidden', inter.variable)} suppressHydrationWarning>
-        <FirebaseClientProvider>
-          <LanguageProvider>
-            {children}
-            <Toaster />
-          </LanguageProvider>
-        </FirebaseClientProvider>
       </body>
     </html>
   );

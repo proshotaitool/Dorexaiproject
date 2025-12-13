@@ -72,14 +72,20 @@ export default function YoutubeTranscriptExtractorPage() {
     const handleDownload = () => {
         const text = formatTranscript();
         const blob = new Blob([text], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'transcript.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            const base64data = reader.result as string;
+
+            // Store details in sessionStorage
+            sessionStorage.setItem('return-url', window.location.pathname);
+            sessionStorage.setItem('download-url', base64data);
+            sessionStorage.setItem('download-filename', 'transcript.txt');
+
+            // Redirect to download page
+            window.location.href = '/download';
+        };
+        reader.readAsDataURL(blob);
     };
 
     return (

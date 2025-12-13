@@ -17,6 +17,7 @@ import {
   FileBarChart,
   LogOut,
   User,
+  Mail,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Icons } from '@/components/icons';
@@ -32,6 +33,7 @@ const adminNavLinks = [
   { href: '/admin/seo', label: 'SEO', icon: Search },
   { href: '/admin/subscriptions', label: 'Subscriptions', icon: CreditCard },
   { href: '/admin/notifications', label: 'Notifications', icon: Bell },
+  { href: '/admin/messages', label: 'Messages', icon: Mail },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
   { href: '/admin/audit-logs', label: 'Audit Logs', icon: FileBarChart },
 ];
@@ -73,21 +75,21 @@ export function AdminSidebar() {
           </ul>
         </nav>
         <div className="mt-auto p-2 space-y-2">
-            <Separator />
-             <Link
-                href="/admin/profile"
-                className={cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-admin-muted-foreground transition-all hover:bg-admin-muted hover:text-admin-foreground',
-                    pathname.startsWith('/admin/profile') && 'bg-primary text-primary-foreground'
-                )}
-                >
-                <User className="h-5 w-5" />
-                My Profile
-            </Link>
-            <Button variant="ghost" className="w-full justify-start" onClick={handleLogout}>
-                <LogOut className="mr-2 h-5 w-5" />
-                Logout
-            </Button>
+          <Separator />
+          <Link
+            href="/admin/profile"
+            className={cn(
+              'flex items-center gap-3 rounded-lg px-3 py-2 text-admin-muted-foreground transition-all hover:bg-admin-muted hover:text-admin-foreground',
+              pathname.startsWith('/admin/profile') && 'bg-primary text-primary-foreground'
+            )}
+          >
+            <User className="h-5 w-5" />
+            My Profile
+          </Link>
+          <Button variant="ghost" className="w-full justify-start" onClick={handleLogout}>
+            <LogOut className="mr-2 h-5 w-5" />
+            Logout
+          </Button>
         </div>
       </div>
     </aside>

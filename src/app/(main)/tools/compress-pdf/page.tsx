@@ -156,14 +156,31 @@ export default function CompressPdfPage() {
         }
     };
 
-    const handleDownload = () => {
+    const handleDownload = async () => {
         if (!compressedPdfUrl) return;
-        const link = document.createElement('a');
-        link.href = compressedPdfUrl;
-        link.download = `compressed-${file?.name || 'document.pdf'}`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+        try {
+            // Convert Blob URL to Base64 Data URL to persist across navigation
+            const response = await fetch(compressedPdfUrl);
+            const blob = await response.blob();
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64data = reader.result as string;
+
+                // Store details in sessionStorage
+                sessionStorage.setItem('return-url', window.location.pathname);
+                sessionStorage.setItem('download-url', base64data);
+                sessionStorage.setItem('download-filename', `compressed-${file?.name || 'document.pdf'}`);
+
+                // Redirect to download page
+                window.location.href = '/download';
+            };
+            reader.readAsDataURL(blob);
+        } catch (e) {
+            console.error("Download preparation failed", e);
+            toast({ title: "Error", description: "Could not prepare download", variant: "destructive" });
+        }
     };
 
     const handleReset = () => {
